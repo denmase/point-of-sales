@@ -114,34 +114,41 @@ function ProductCard({
             </div>
 
             {/* Product Info */}
-            <div className="p-4">
+            <div className="p-3 sm:p-4">
                 <div className="flex items-start justify-between gap-2 mb-2">
-                    <span className="px-2 py-0.5 text-xs font-medium bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-400 rounded-md">
+                    <span className="px-2 py-0.5 text-xs font-medium bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-400 rounded-md truncate">
                         {product.category?.name || "Kategori"}
                     </span>
                 </div>
                 <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200 line-clamp-2 mb-1">
                     {product.title}
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mb-3">
-                    {product.barcode}
-                </p>
-                <div className="flex items-center justify-between">
-                    <div>
+                {product.barcode && (
+                    <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mb-2">
+                        {product.barcode}
+                    </p>
+                )}
+
+                {/* Price Section - Mobile Friendly */}
+                <div className="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                    {/* Sell Price - Prominent */}
+                    <p className="text-base sm:text-lg font-bold text-primary-600 dark:text-primary-400">
+                        {formatCurrency(product.sell_price)}
+                    </p>
+                    {/* Buy Price - Subtle */}
+                    <div className="flex items-center justify-between mt-1">
                         <p className="text-xs text-slate-400 dark:text-slate-500">
-                            Harga Beli
+                            Modal: {formatCurrency(product.buy_price)}
                         </p>
-                        <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                            {formatCurrency(product.buy_price)}
-                        </p>
-                    </div>
-                    <div className="text-right">
-                        <p className="text-xs text-slate-400 dark:text-slate-500">
-                            Harga Jual
-                        </p>
-                        <p className="text-base font-bold text-primary-600 dark:text-primary-400">
-                            {formatCurrency(product.sell_price)}
-                        </p>
+                        {/* Profit Indicator */}
+                        {product.sell_price > product.buy_price && (
+                            <span className="text-xs font-medium text-success-600 dark:text-success-400">
+                                +
+                                {formatCurrency(
+                                    product.sell_price - product.buy_price
+                                )}
+                            </span>
+                        )}
                     </div>
                 </div>
             </div>
