@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Apps;
 
 use App\Http\Controllers\Controller;
@@ -17,9 +16,10 @@ class PaymentSettingController extends Controller
         ]);
 
         return Inertia::render('Dashboard/Settings/Payment', [
-            'setting' => $setting,
+            'setting'           => $setting,
             'supportedGateways' => [
                 ['value' => 'cash', 'label' => 'Tunai'],
+                ['value' => PaymentSetting::GATEWAY_BANK_TRANSFER, 'label' => 'Transfer Bank'],
                 ['value' => PaymentSetting::GATEWAY_MIDTRANS, 'label' => 'Midtrans'],
                 ['value' => PaymentSetting::GATEWAY_XENDIT, 'label' => 'Xendit'],
             ],
@@ -33,22 +33,23 @@ class PaymentSettingController extends Controller
         ]);
 
         $data = $request->validate([
-            'default_gateway' => [
+            'default_gateway'       => [
                 'required',
-                Rule::in(['cash', PaymentSetting::GATEWAY_MIDTRANS, PaymentSetting::GATEWAY_XENDIT]),
+                Rule::in(['cash', PaymentSetting::GATEWAY_BANK_TRANSFER, PaymentSetting::GATEWAY_MIDTRANS, PaymentSetting::GATEWAY_XENDIT]),
             ],
-            'midtrans_enabled' => ['boolean'],
-            'midtrans_server_key' => ['nullable', 'string'],
-            'midtrans_client_key' => ['nullable', 'string'],
-            'midtrans_production' => ['boolean'],
-            'xendit_enabled' => ['boolean'],
-            'xendit_secret_key' => ['nullable', 'string'],
-            'xendit_public_key' => ['nullable', 'string'],
-            'xendit_production' => ['boolean'],
+            'bank_transfer_enabled' => ['boolean'],
+            'midtrans_enabled'      => ['boolean'],
+            'midtrans_server_key'   => ['nullable', 'string'],
+            'midtrans_client_key'   => ['nullable', 'string'],
+            'midtrans_production'   => ['boolean'],
+            'xendit_enabled'        => ['boolean'],
+            'xendit_secret_key'     => ['nullable', 'string'],
+            'xendit_public_key'     => ['nullable', 'string'],
+            'xendit_production'     => ['boolean'],
         ]);
 
         $midtransEnabled = (bool) ($data['midtrans_enabled'] ?? false);
-        $xenditEnabled = (bool) ($data['xendit_enabled'] ?? false);
+        $xenditEnabled   = (bool) ($data['xendit_enabled'] ?? false);
 
         if ($midtransEnabled && (empty($data['midtrans_server_key']) || empty($data['midtrans_client_key']))) {
             return back()->withErrors([
@@ -64,7 +65,7 @@ class PaymentSettingController extends Controller
 
         if (
             $data['default_gateway'] !== 'cash'
-            && !(($data['default_gateway'] === PaymentSetting::GATEWAY_MIDTRANS && $midtransEnabled)
+            && ! (($data['default_gateway'] === PaymentSetting::GATEWAY_MIDTRANS && $midtransEnabled)
                 || ($data['default_gateway'] === PaymentSetting::GATEWAY_XENDIT && $xenditEnabled))
         ) {
             return back()->withErrors([
@@ -73,15 +74,16 @@ class PaymentSettingController extends Controller
         }
 
         $setting->update([
-            'default_gateway' => $data['default_gateway'],
-            'midtrans_enabled' => $midtransEnabled,
-            'midtrans_server_key' => $data['midtrans_server_key'],
-            'midtrans_client_key' => $data['midtrans_client_key'],
-            'midtrans_production' => (bool) ($data['midtrans_production'] ?? false),
-            'xendit_enabled' => $xenditEnabled,
-            'xendit_secret_key' => $data['xendit_secret_key'],
-            'xendit_public_key' => $data['xendit_public_key'],
-            'xendit_production' => (bool) ($data['xendit_production'] ?? false),
+            'default_gateway'       => $data['default_gateway'],
+            'bank_transfer_enabled' => (bool) ($data['bank_transfer_enabled'] ?? false),
+            'midtrans_enabled'      => $midtransEnabled,
+            'midtrans_server_key'   => $data['midtrans_server_key'],
+            'midtrans_client_key'   => $data['midtrans_client_key'],
+            'midtrans_production'   => (bool) ($data['midtrans_production'] ?? false),
+            'xendit_enabled'        => $xenditEnabled,
+            'xendit_secret_key'     => $data['xendit_secret_key'],
+            'xendit_public_key'     => $data['xendit_public_key'],
+            'xendit_production'     => (bool) ($data['xendit_production'] ?? false),
         ]);
 
         return redirect()

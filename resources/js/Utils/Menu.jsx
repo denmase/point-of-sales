@@ -168,6 +168,13 @@ export default function Menu() {
                     permissions: hasAnyPermission(["payment-settings-access"]),
                 },
                 {
+                    title: "Rekening Bank",
+                    href: route("settings.bank-accounts.index"),
+                    active: url === "/dashboard/settings/bank-accounts",
+                    icon: <IconCreditCard size={20} strokeWidth={1.5} />,
+                    permissions: hasAnyPermission(["payment-settings-access"]),
+                },
+                {
                     title: "Target Penjualan",
                     href: route("settings.target"),
                     active: url === "/dashboard/settings/target",

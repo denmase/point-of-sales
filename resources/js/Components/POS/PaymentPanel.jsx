@@ -6,6 +6,7 @@ import {
     IconArrowRight,
     IconCheck,
     IconAlertCircle,
+    IconBuildingBank,
 } from "@tabler/icons-react";
 
 const formatPrice = (value = 0) =>
@@ -38,7 +39,12 @@ function QuickAmountButton({ amount, onClick, isSelected }) {
 
 // Payment Method Card
 function PaymentMethodCard({ method, isSelected, onClick }) {
-    const IconComponent = method.value === "cash" ? IconCash : IconCreditCard;
+    const getIcon = () => {
+        if (method.value === "cash") return IconCash;
+        if (method.value === "bank_transfer") return IconBuildingBank;
+        return IconCreditCard;
+    };
+    const IconComponent = getIcon();
 
     return (
         <button
@@ -103,6 +109,9 @@ export default function PaymentPanel({
     paymentMethod = "cash",
     onPaymentMethodChange,
     paymentOptions = [],
+    bankAccounts = [],
+    selectedBankAccount = null,
+    onBankAccountChange,
     onSubmit,
     isSubmitting = false,
     hasItems = false,
@@ -115,6 +124,7 @@ export default function PaymentPanel({
     // Calculations
     const payable = Math.max(subtotal - discount, 0);
     const isCashPayment = paymentMethod === "cash";
+    const isBankTransfer = paymentMethod === "bank_transfer";
     const change = isCashPayment ? Math.max(cash - payable, 0) : 0;
     const remaining = isCashPayment ? Math.max(payable - cash, 0) : 0;
 
@@ -123,6 +133,7 @@ export default function PaymentPanel({
         hasItems &&
         selectedCustomer &&
         (isCashPayment ? cash >= payable : true) &&
+        (isBankTransfer ? selectedBankAccount !== null : true) &&
         !isSubmitting;
 
     // Submit label
@@ -216,6 +227,48 @@ export default function PaymentPanel({
                         ))}
                     </div>
                 </div>
+
+                {/* Bank Selector (only for bank_transfer) */}
+                {paymentMethod === "bank_transfer" &&
+                    bankAccounts.length > 0 && (
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                                Pilih Rekening Tujuan
+                            </label>
+                            <select
+                                value={selectedBankAccount?.id || ""}
+                                onChange={(e) => {
+                                    const bank = bankAccounts.find(
+                                        (b) => b.id === parseInt(e.target.value)
+                                    );
+                                    onBankAccountChange?.(bank || null);
+                                }}
+                                className="w-full h-12 px-4 rounded-xl border border-slate-200 dark:border-slate-700
+                                bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200
+                                focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
+                            >
+                                <option value="">-- Pilih Bank --</option>
+                                {bankAccounts.map((bank) => (
+                                    <option key={bank.id} value={bank.id}>
+                                        {bank.bank_name} - {bank.account_number}
+                                    </option>
+                                ))}
+                            </select>
+                            {selectedBankAccount && (
+                                <div className="mt-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                    <p className="text-sm font-semibold text-slate-800 dark:text-white">
+                                        {selectedBankAccount.bank_name}
+                                    </p>
+                                    <p className="text-sm text-slate-600 dark:text-slate-400">
+                                        {selectedBankAccount.account_number}
+                                    </p>
+                                    <p className="text-xs text-slate-500 dark:text-slate-500">
+                                        a.n. {selectedBankAccount.account_name}
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    )}
 
                 {/* Cash Input (only for cash payment) */}
                 {isCashPayment && (

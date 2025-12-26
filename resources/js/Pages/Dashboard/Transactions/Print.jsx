@@ -36,6 +36,7 @@ export default function Print({ transaction }) {
 
     const paymentLabels = {
         cash: "Tunai",
+        bank_transfer: "Transfer Bank",
         midtrans: "Midtrans",
         xendit: "Xendit",
     };
@@ -270,6 +271,32 @@ export default function Print({ transaction }) {
                                     </p>
                                 </div>
                             </div>
+
+                            {/* Bank Transfer Info */}
+                            {paymentMethodKey === "bank_transfer" &&
+                                transaction.bank_account && (
+                                    <div className="mx-6 mb-6 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                        <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+                                            Silakan Transfer ke Rekening
+                                        </p>
+                                        <p className="text-lg font-bold text-slate-900 dark:text-white">
+                                            {transaction.bank_account.bank_name}
+                                        </p>
+                                        <p className="text-base font-semibold text-primary-600 dark:text-primary-400">
+                                            {
+                                                transaction.bank_account
+                                                    .account_number
+                                            }
+                                        </p>
+                                        <p className="text-sm text-slate-600 dark:text-slate-400">
+                                            a.n.{" "}
+                                            {
+                                                transaction.bank_account
+                                                    .account_name
+                                            }
+                                        </p>
+                                    </div>
+                                )}
 
                             {/* Items Table */}
                             <div className="px-6 py-6">

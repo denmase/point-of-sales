@@ -16,6 +16,7 @@ export default function Payment({ setting, supportedGateways = [] }) {
 
     const { data, setData, put, errors, processing } = useForm({
         default_gateway: setting?.default_gateway ?? "cash",
+        bank_transfer_enabled: setting?.bank_transfer_enabled ?? false,
         midtrans_enabled: setting?.midtrans_enabled ?? false,
         midtrans_server_key: setting?.midtrans_server_key ?? "",
         midtrans_client_key: setting?.midtrans_client_key ?? "",
@@ -97,6 +98,44 @@ export default function Payment({ setting, supportedGateways = [] }) {
                             </small>
                         )}
                     </div>
+                </div>
+
+                {/* Bank Transfer */}
+                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                            🏦 Transfer Bank
+                        </h3>
+                        <label
+                            className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all ${
+                                data.bank_transfer_enabled
+                                    ? "bg-success-100 text-success-700 dark:bg-success-900/30 dark:text-success-400"
+                                    : "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
+                            }`}
+                        >
+                            <Checkbox
+                                checked={data.bank_transfer_enabled}
+                                onChange={(e) =>
+                                    setData(
+                                        "bank_transfer_enabled",
+                                        e.target.checked
+                                    )
+                                }
+                            />
+                            {data.bank_transfer_enabled ? "Aktif" : "Nonaktif"}
+                        </label>
+                    </div>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+                        Pembayaran manual via transfer bank. Kasir akan
+                        memasukkan transaksi dengan status pending, kemudian
+                        admin mengkonfirmasi setelah dana diterima.
+                    </p>
+                    <a
+                        href={route("settings.bank-accounts.index")}
+                        className="inline-flex items-center gap-2 text-sm text-primary-500 hover:text-primary-600 font-medium"
+                    >
+                        Kelola Rekening Bank →
+                    </a>
                 </div>
 
                 {/* Midtrans */}

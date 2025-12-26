@@ -28,6 +28,7 @@ import {
     IconTrash,
     IconCash,
     IconCreditCard,
+    IconBuildingBank,
 } from "@tabler/icons-react";
 
 const formatPrice = (value = 0) =>
@@ -46,6 +47,7 @@ export default function Index({
     categories = [],
     paymentGateways = [],
     defaultPaymentGateway = "cash",
+    bankAccounts = [],
 }) {
     const { auth, errors } = usePage().props;
 
@@ -65,6 +67,7 @@ export default function Index({
     const [mobileView, setMobileView] = useState("products"); // 'products' | 'cart'
     const [numpadOpen, setNumpadOpen] = useState(false);
     const [showShortcuts, setShowShortcuts] = useState(false);
+    const [selectedBankAccount, setSelectedBankAccount] = useState(null);
 
     // Ref for search input to enable keyboard focus
     const searchInputRef = useRef(null);
@@ -310,6 +313,13 @@ export default function Index({
             return;
         }
 
+        // Validate bank transfer requires bank selection
+        const isBankTransfer = paymentMethod === "bank_transfer";
+        if (isBankTransfer && !selectedBankAccount) {
+            toast.error("Pilih rekening bank tujuan");
+            return;
+        }
+
         setIsSubmitting(true);
 
         router.post(
@@ -321,12 +331,16 @@ export default function Index({
                 cash: isCashPayment ? cash : payable,
                 change: isCashPayment ? Math.max(cash - payable, 0) : 0,
                 payment_gateway: isCashPayment ? null : paymentMethod,
+                bank_account_id: isBankTransfer
+                    ? selectedBankAccount?.id
+                    : null,
             },
             {
                 onSuccess: () => {
                     setDiscountInput("");
                     setCashInput("");
                     setSelectedCustomer(null);
+                    setSelectedBankAccount(null);
                     setPaymentMethod(defaultPaymentGateway ?? "cash");
                     setIsSubmitting(false);
                     toast.success("Transaksi berhasil!");
@@ -595,6 +609,11 @@ export default function Index({
                                             >
                                                 {method.value === "cash" ? (
                                                     <IconCash size={16} />
+                                                ) : method.value ===
+                                                  "bank_transfer" ? (
+                                                    <IconBuildingBank
+                                                        size={16}
+                                                    />
                                                 ) : (
                                                     <IconCreditCard size={16} />
                                                 )}
@@ -615,6 +634,55 @@ export default function Index({
                                     ))}
                                 </div>
                             </div>
+
+                            {/* Bank Selector - Only for bank_transfer */}
+                            {paymentMethod === "bank_transfer" &&
+                                bankAccounts.length > 0 && (
+                                    <div>
+                                        <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-2">
+                                            Rekening Tujuan
+                                        </label>
+                                        <select
+                                            value={
+                                                selectedBankAccount?.id || ""
+                                            }
+                                            onChange={(e) => {
+                                                const bank = bankAccounts.find(
+                                                    (b) =>
+                                                        b.id ===
+                                                        parseInt(e.target.value)
+                                                );
+                                                setSelectedBankAccount(
+                                                    bank || null
+                                                );
+                                            }}
+                                            className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
+                                        >
+                                            <option value="">
+                                                -- Pilih Bank --
+                                            </option>
+                                            {bankAccounts.map((bank) => (
+                                                <option
+                                                    key={bank.id}
+                                                    value={bank.id}
+                                                >
+                                                    {bank.bank_name} -{" "}
+                                                    {bank.account_number}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        {selectedBankAccount && (
+                                            <div className="mt-2 p-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                                <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                                                    a.n.{" "}
+                                                    {
+                                                        selectedBankAccount.account_name
+                                                    }
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
 
                             {/* Quick Amounts - Only for cash */}
                             {paymentMethod === "cash" && (

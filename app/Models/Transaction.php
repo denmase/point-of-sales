@@ -1,16 +1,15 @@
 <?php
-
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
     use HasFactory;
-    
+
     /**
      * fillable
      *
@@ -28,6 +27,7 @@ class Transaction extends Model
         'payment_status',
         'payment_reference',
         'payment_url',
+        'bank_account_id',
     ];
 
     /**
@@ -61,6 +61,16 @@ class Transaction extends Model
     }
 
     /**
+     * bankAccount
+     *
+     * @return void
+     */
+    public function bankAccount()
+    {
+        return $this->belongsTo(BankAccount::class);
+    }
+
+    /**
      * profits
      *
      * @return void
@@ -78,7 +88,7 @@ class Transaction extends Model
     protected function createdAt(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => Carbon::parse($value)->format('d-M-Y H:i:s'),
+            get: fn($value) => Carbon::parse($value)->format('d-M-Y H:i:s'),
         );
     }
 }

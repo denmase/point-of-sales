@@ -81,6 +81,9 @@ class TransactionController extends Controller
             $defaultGateway = 'cash';
         }
 
+        // Get active bank accounts for bank transfer
+        $bankAccounts = \App\Models\BankAccount::active()->ordered()->get();
+
         return Inertia::render('Dashboard/Transactions/Index', [
             'carts'                 => $carts,
             'carts_total'           => $carts_total,
@@ -90,6 +93,7 @@ class TransactionController extends Controller
             'categories'            => $categories,
             'paymentGateways'       => $paymentSetting?->enabledGateways() ?? [],
             'defaultPaymentGateway' => $defaultGateway,
+            'bankAccounts'          => $bankAccounts,
         ]);
     }
 
@@ -422,15 +426,16 @@ class TransactionController extends Controller
             $isCashPayment
         ) {
             $transaction = Transaction::create([
-                'cashier_id'     => auth()->user()->id,
-                'customer_id'    => $request->customer_id,
-                'invoice'        => $invoice,
-                'cash'           => $cashAmount,
-                'change'         => $changeAmount,
-                'discount'       => $request->discount,
-                'grand_total'    => $request->grand_total,
-                'payment_method' => $paymentGateway ?: 'cash',
-                'payment_status' => $isCashPayment ? 'paid' : 'pending',
+                'cashier_id'      => auth()->user()->id,
+                'customer_id'     => $request->customer_id,
+                'invoice'         => $invoice,
+                'cash'            => $cashAmount,
+                'change'          => $changeAmount,
+                'discount'        => $request->discount,
+                'grand_total'     => $request->grand_total,
+                'payment_method'  => $paymentGateway ?: 'cash',
+                'payment_status'  => $isCashPayment ? 'paid' : 'pending',
+                'bank_account_id' => $paymentGateway === 'bank_transfer' ? $request->bank_account_id : null,
             ]);
 
             $carts = Cart::where('cashier_id', auth()->user()->id)->get();
@@ -528,5 +533,25 @@ class TransactionController extends Controller
             'transactions' => $transactions,
             'filters'      => $filters,
         ]);
+    }
+
+    /**
+     * Confirm payment for bank transfer transactions
+     */
+    public function confirmPayment(Transaction $transaction)
+    {
+        if ($transaction->payment_status === 'paid') {
+            return redirect()
+                ->back()
+                ->with('error', 'Transaksi sudah dibayar.');
+        }
+
+        $transaction->update([
+            'payment_status' => 'paid',
+        ]);
+
+        return redirect()
+            ->back()
+            ->with('success', "Pembayaran untuk invoice {$transaction->invoice} berhasil dikonfirmasi.");
     }
 }

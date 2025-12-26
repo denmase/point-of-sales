@@ -13,6 +13,7 @@ import {
     IconPrinter,
     IconFilter,
     IconX,
+    IconCheck,
 } from "@tabler/icons-react";
 
 const defaultFilters = {
@@ -229,6 +230,9 @@ const History = ({ transactions, filters }) => {
                                         <th className="px-4 py-4 text-right text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                                             Profit
                                         </th>
+                                        <th className="px-4 py-4 text-center text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                            Status
+                                        </th>
                                         <th className="px-4 py-4 text-center text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider"></th>
                                     </tr>
                                 </thead>
@@ -276,6 +280,41 @@ const History = ({ transactions, filters }) => {
                                                 {formatCurrency(
                                                     transaction.total_profit ??
                                                         0
+                                                )}
+                                            </td>
+                                            <td className="px-4 py-4 text-center">
+                                                {transaction.payment_status ===
+                                                "paid" ? (
+                                                    <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-400 rounded-full">
+                                                        <IconCheck size={12} />
+                                                        Lunas
+                                                    </span>
+                                                ) : transaction.payment_status ===
+                                                  "pending" ? (
+                                                    <button
+                                                        onClick={() => {
+                                                            if (
+                                                                confirm(
+                                                                    `Konfirmasi pembayaran untuk ${transaction.invoice}?`
+                                                                )
+                                                            ) {
+                                                                router.patch(
+                                                                    route(
+                                                                        "transactions.confirm-payment",
+                                                                        transaction.id
+                                                                    )
+                                                                );
+                                                            }
+                                                        }}
+                                                        className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium bg-warning-100 dark:bg-warning-900/30 text-warning-700 dark:text-warning-400 rounded-full hover:bg-warning-200 dark:hover:bg-warning-900/50 transition-colors"
+                                                    >
+                                                        Pending - Konfirmasi
+                                                    </button>
+                                                ) : (
+                                                    <span className="inline-flex items-center px-2 py-1 text-xs font-medium bg-danger-100 dark:bg-danger-900/30 text-danger-700 dark:text-danger-400 rounded-full">
+                                                        {transaction.payment_status ??
+                                                            "-"}
+                                                    </span>
                                                 )}
                                             </td>
                                             <td className="px-4 py-4 text-center">
