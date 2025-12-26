@@ -39,17 +39,8 @@ export default function Sidebar({ sidebarOpen }) {
                 )}
             </div>
 
-            {/* User Info */}
-            <div
-                className={`
-                p-3 border-b border-slate-100 dark:border-slate-800
-                ${
-                    sidebarOpen
-                        ? "flex items-center gap-3"
-                        : "flex justify-center"
-                }
-            `}
-            >
+            {/* User Avatar */}
+            <div className="p-3 border-b border-slate-100 dark:border-slate-800 flex justify-center">
                 <img
                     src={
                         auth.user.avatar ||
@@ -58,18 +49,8 @@ export default function Sidebar({ sidebarOpen }) {
                     className={`rounded-full ring-2 ring-slate-100 dark:ring-slate-800 ${
                         sidebarOpen ? "w-10 h-10" : "w-8 h-8"
                     }`}
-                    alt={auth.user.name}
+                    alt="User"
                 />
-                {sidebarOpen && (
-                    <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 truncate">
-                            {auth.user.name}
-                        </p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
-                            {auth.user.email}
-                        </p>
-                    </div>
-                )}
             </div>
 
             {/* Navigation */}
