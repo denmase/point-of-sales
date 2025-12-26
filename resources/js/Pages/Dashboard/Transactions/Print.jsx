@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 import {
     IconArrowLeft,
     IconPrinter,
@@ -7,6 +7,9 @@ import {
     IconReceipt,
     IconFileInvoice,
     IconTruck,
+    IconBuildingBank,
+    IconCheck,
+    IconAlertCircle,
 } from "@tabler/icons-react";
 import ThermalReceipt, {
     ThermalReceipt58mm,
@@ -15,6 +18,8 @@ import ShippingLabel from "@/Components/Receipt/ShippingLabel";
 
 export default function Print({ transaction }) {
     const [printMode, setPrintMode] = useState("invoice"); // 'invoice' | 'thermal80' | 'thermal58'
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [isConfirming, setIsConfirming] = useState(false);
 
     const formatPrice = (price = 0) =>
         Number(price || 0).toLocaleString("id-ID", {
@@ -162,6 +167,20 @@ export default function Print({ transaction }) {
                                     Pembayaran
                                 </a>
                             )}
+
+                            {/* Confirm Payment Button - Only for pending bank_transfer */}
+                            {paymentMethodKey === "bank_transfer" &&
+                                paymentStatusKey === "pending" && (
+                                    <button
+                                        onClick={() =>
+                                            setShowConfirmModal(true)
+                                        }
+                                        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-success-500 hover:bg-success-600 text-sm font-semibold text-white transition-colors"
+                                    >
+                                        <IconCheck size={18} />
+                                        Konfirmasi Bayar
+                                    </button>
+                                )}
 
                             <button
                                 type="button"
@@ -421,6 +440,149 @@ export default function Print({ transaction }) {
                     )}
                 </div>
             </div>
+
+            {/* Confirmation Modal */}
+            {showConfirmModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 print:hidden">
+                    {/* Backdrop */}
+                    <div
+                        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                        onClick={() =>
+                            !isConfirming && setShowConfirmModal(false)
+                        }
+                    />
+
+                    {/* Modal */}
+                    <div className="relative bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
+                        {/* Header */}
+                        <div className="bg-gradient-to-r from-primary-500 to-primary-600 px-6 py-5 text-white">
+                            <div className="flex items-center gap-3">
+                                <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+                                    <IconBuildingBank size={24} />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold">
+                                        Konfirmasi Pembayaran
+                                    </h3>
+                                    <p className="text-sm opacity-90">
+                                        Transfer Bank
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Content */}
+                        <div className="p-6 space-y-4">
+                            {/* Invoice Info */}
+                            <div className="bg-slate-50 dark:bg-slate-800 rounded-xl p-4">
+                                <div className="flex justify-between items-center mb-2">
+                                    <span className="text-sm text-slate-500 dark:text-slate-400">
+                                        Invoice
+                                    </span>
+                                    <span className="text-sm font-bold text-slate-900 dark:text-white">
+                                        {transaction.invoice}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between items-center mb-2">
+                                    <span className="text-sm text-slate-500 dark:text-slate-400">
+                                        Pelanggan
+                                    </span>
+                                    <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                        {transaction.customer?.name ?? "Umum"}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-sm text-slate-500 dark:text-slate-400">
+                                        Total
+                                    </span>
+                                    <span className="text-lg font-bold text-primary-600 dark:text-primary-400">
+                                        {formatPrice(
+                                            transaction.grand_total ?? 0
+                                        )}
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* Confirmation Message */}
+                            <div className="flex items-start gap-3 p-4 bg-warning-50 dark:bg-warning-900/20 rounded-xl border border-warning-200 dark:border-warning-800">
+                                <IconAlertCircle
+                                    size={20}
+                                    className="text-warning-600 dark:text-warning-400 flex-shrink-0 mt-0.5"
+                                />
+                                <p className="text-sm text-warning-800 dark:text-warning-300">
+                                    Pastikan dana sudah diterima sebelum
+                                    mengkonfirmasi pembayaran ini. Tindakan ini
+                                    tidak dapat dibatalkan.
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="px-6 pb-6 flex gap-3">
+                            <button
+                                onClick={() => setShowConfirmModal(false)}
+                                disabled={isConfirming}
+                                className="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors disabled:opacity-50"
+                            >
+                                Batal
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setIsConfirming(true);
+                                    router.patch(
+                                        route(
+                                            "transactions.confirm-payment",
+                                            transaction.id
+                                        ),
+                                        {},
+                                        {
+                                            onSuccess: () => {
+                                                setShowConfirmModal(false);
+                                                setIsConfirming(false);
+                                            },
+                                            onError: () => {
+                                                setIsConfirming(false);
+                                            },
+                                        }
+                                    );
+                                }}
+                                disabled={isConfirming}
+                                className="flex-1 px-4 py-3 rounded-xl bg-success-500 hover:bg-success-600 text-white font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                            >
+                                {isConfirming ? (
+                                    <>
+                                        <svg
+                                            className="animate-spin h-4 w-4"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <circle
+                                                className="opacity-25"
+                                                cx="12"
+                                                cy="12"
+                                                r="10"
+                                                stroke="currentColor"
+                                                strokeWidth="4"
+                                                fill="none"
+                                            />
+                                            <path
+                                                className="opacity-75"
+                                                fill="currentColor"
+                                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                            />
+                                        </svg>
+                                        Memproses...
+                                    </>
+                                ) : (
+                                    <>
+                                        <IconCheck size={18} />
+                                        Konfirmasi Lunas
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 }
