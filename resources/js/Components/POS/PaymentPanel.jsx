@@ -235,38 +235,57 @@ export default function PaymentPanel({
                             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                                 Pilih Rekening Tujuan
                             </label>
-                            <select
-                                value={selectedBankAccount?.id || ""}
-                                onChange={(e) => {
-                                    const bank = bankAccounts.find(
-                                        (b) => b.id === parseInt(e.target.value)
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                {bankAccounts.map((bank) => {
+                                    const isActive =
+                                        selectedBankAccount?.id === bank.id;
+                                    return (
+                                        <button
+                                            type="button"
+                                            key={bank.id}
+                                            onClick={() =>
+                                                onBankAccountChange?.(bank)
+                                            }
+                                            className={`flex items-center gap-3 p-3 rounded-xl border-2 transition-colors text-left ${
+                                                isActive
+                                                    ? "border-primary-500 bg-primary-50 dark:bg-primary-950/30"
+                                                    : "border-slate-200 dark:border-slate-700 hover:border-primary-200 dark:hover:border-primary-800"
+                                            }`}
+                                        >
+                                            <div className="w-12 h-12 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 flex items-center justify-center overflow-hidden">
+                                                {bank.logo_url ? (
+                                                    <img
+                                                        src={bank.logo_url}
+                                                        alt={bank.bank_name}
+                                                        className="max-w-full max-h-full object-contain"
+                                                    />
+                                                ) : (
+                                                    <IconBuildingBank
+                                                        size={22}
+                                                        className="text-slate-500"
+                                                    />
+                                                )}
+                                            </div>
+                                            <div className="flex-1">
+                                                <p className="text-sm font-semibold text-slate-800 dark:text-white">
+                                                    {bank.bank_name}
+                                                </p>
+                                                <p className="text-sm text-slate-600 dark:text-slate-400">
+                                                    {bank.account_number}
+                                                </p>
+                                                <p className="text-xs text-slate-500 dark:text-slate-500">
+                                                    a.n. {bank.account_name}
+                                                </p>
+                                            </div>
+                                            {isActive && (
+                                                <span className="text-primary-600 text-xs font-semibold">
+                                                    Dipilih
+                                                </span>
+                                            )}
+                                        </button>
                                     );
-                                    onBankAccountChange?.(bank || null);
-                                }}
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 dark:border-slate-700
-                                bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200
-                                focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
-                            >
-                                <option value="">-- Pilih Bank --</option>
-                                {bankAccounts.map((bank) => (
-                                    <option key={bank.id} value={bank.id}>
-                                        {bank.bank_name} - {bank.account_number}
-                                    </option>
-                                ))}
-                            </select>
-                            {selectedBankAccount && (
-                                <div className="mt-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                                    <p className="text-sm font-semibold text-slate-800 dark:text-white">
-                                        {selectedBankAccount.bank_name}
-                                    </p>
-                                    <p className="text-sm text-slate-600 dark:text-slate-400">
-                                        {selectedBankAccount.account_number}
-                                    </p>
-                                    <p className="text-xs text-slate-500 dark:text-slate-500">
-                                        a.n. {selectedBankAccount.account_name}
-                                    </p>
-                                </div>
-                            )}
+                                })}
+                            </div>
                         </div>
                     )}
 

@@ -22,6 +22,7 @@ export default function BankAccounts({ bankAccounts = [] }) {
         bank_name: "",
         account_number: "",
         account_name: "",
+        logo: null,
         is_active: true,
     });
 
@@ -32,21 +33,19 @@ export default function BankAccounts({ bankAccounts = [] }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        const options = {
+            forceFormData: true,
+            onSuccess: () => {
+                reset();
+                setEditingId(null);
+                setShowForm(false);
+            },
+        };
+
         if (editingId) {
-            put(route("settings.bank-accounts.update", editingId), {
-                onSuccess: () => {
-                    reset();
-                    setEditingId(null);
-                    setShowForm(false);
-                },
-            });
+            put(route("settings.bank-accounts.update", editingId), options);
         } else {
-            post(route("settings.bank-accounts.store"), {
-                onSuccess: () => {
-                    reset();
-                    setShowForm(false);
-                },
-            });
+            post(route("settings.bank-accounts.store"), options);
         }
     };
 
@@ -55,6 +54,7 @@ export default function BankAccounts({ bankAccounts = [] }) {
             bank_name: bank.bank_name,
             account_number: bank.account_number,
             account_name: bank.account_name,
+            logo: null,
             is_active: bank.is_active,
         });
         setEditingId(bank.id);
@@ -147,6 +147,34 @@ export default function BankAccounts({ bankAccounts = [] }) {
                                     errors={errors.account_name}
                                 />
                             </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                <div className="md:col-span-1">
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                                        Logo Bank (opsional)
+                                    </label>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) =>
+                                            setData(
+                                                "logo",
+                                                e.target.files?.[0] || null
+                                            )
+                                        }
+                                        className="w-full h-11 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
+                                    />
+                                    {errors.logo && (
+                                        <p className="text-xs text-danger-500 mt-1">
+                                            {errors.logo}
+                                        </p>
+                                    )}
+                                </div>
+                                <div className="md:col-span-2">
+                                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                                        Format: JPG, PNG, SVG. Maks 1MB. Jika dibiarkan kosong, ikon default akan digunakan.
+                                    </p>
+                                </div>
+                            </div>
                             <div className="flex items-center gap-3">
                                 <button
                                     type="submit"
@@ -181,11 +209,19 @@ export default function BankAccounts({ bankAccounts = [] }) {
                                     <div className="text-slate-400 cursor-move">
                                         <IconGripVertical size={20} />
                                     </div>
-                                    <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                                        <IconBuildingBank
-                                            size={24}
-                                            className="text-slate-500"
-                                        />
+                                    <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden">
+                                        {bank.logo_url ? (
+                                            <img
+                                                src={bank.logo_url}
+                                                alt={bank.bank_name}
+                                                className="max-w-full max-h-full object-contain"
+                                            />
+                                        ) : (
+                                            <IconBuildingBank
+                                                size={24}
+                                                className="text-slate-500"
+                                            />
+                                        )}
                                     </div>
                                     <div className="flex-1">
                                         <p className="font-semibold text-slate-800 dark:text-white">
