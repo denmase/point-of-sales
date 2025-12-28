@@ -6,8 +6,15 @@ import LinkItemDropdown from "@/Components/Dashboard/LinkItemDropdown";
 import Menu from "@/Utils/Menu";
 
 export default function Sidebar({ sidebarOpen }) {
-    const { auth } = usePage().props;
+    const { auth, storeProfile } = usePage().props;
     const menuNavigation = Menu();
+
+    const storeName = storeProfile?.name || "KASIR";
+    const storeLogo = storeProfile?.logo || null;
+    const storeInitial =
+        storeName?.charAt(0)?.toUpperCase() ||
+        auth?.user?.name?.charAt(0)?.toUpperCase() ||
+        "K";
 
     return (
         <div
@@ -25,19 +32,37 @@ export default function Sidebar({ sidebarOpen }) {
             <div className="flex items-center justify-center h-16 border-b border-slate-100 dark:border-slate-800">
                 {sidebarOpen ? (
                     <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
-                            <span className="text-white font-bold text-sm">
-                                K
-                            </span>
-                        </div>
-                        <span className="text-xl font-bold text-slate-800 dark:text-white">
-                            KASIR
+                        {storeLogo ? (
+                            <img
+                                src={storeLogo}
+                                alt={storeName}
+                                className="w-10 h-10  object-cover"
+                            />
+                        ) : (
+                            <div className="w-10 h-10  bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
+                                <span className="text-white font-bold text-sm">
+                                    {storeInitial}
+                                </span>
+                            </div>
+                        )}
+                        <span className="text-xl font-bold text-slate-800 dark:text-white truncate">
+                            {storeName}
                         </span>
                     </div>
                 ) : (
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
-                        <span className="text-white font-bold text-sm">K</span>
-                    </div>
+                    storeLogo ? (
+                        <img
+                            src={storeLogo}
+                            alt={storeName}
+                            className="w-9 h-9 rounded-md object-cover"
+                        />
+                    ) : (
+                        <div className="w-9 h-9 rounded-md bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
+                            <span className="text-white font-bold text-sm">
+                                {storeInitial}
+                            </span>
+                        </div>
+                    )
                 )}
             </div>
 
