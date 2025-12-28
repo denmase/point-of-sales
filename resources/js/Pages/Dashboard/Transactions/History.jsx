@@ -16,6 +16,7 @@ import {
     IconCheck,
     IconBuildingBank,
     IconAlertCircle,
+    IconBrandWhatsapp,
 } from "@tabler/icons-react";
 
 const defaultFilters = {
@@ -234,13 +235,12 @@ const History = ({ transactions, filters }) => {
                                         <th className="px-4 py-4 text-right text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                                             Total
                                         </th>
-                                        <th className="px-4 py-4 text-right text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                                            Profit
-                                        </th>
                                         <th className="px-4 py-4 text-center text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                                             Status
                                         </th>
-                                        <th className="px-4 py-4 text-center text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider"></th>
+                                        <th className="px-4 py-4 text-center text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                            Aksi
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -310,17 +310,36 @@ const History = ({ transactions, filters }) => {
                                                     </span>
                                                 )}
                                             </td>
-                                            <td className="px-4 py-4 text-center">
-                                                <Link
-                                                    href={route(
-                                                        "transactions.print",
-                                                        transaction.invoice
-                                                    )}
-                                                    className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-500 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-950/50 transition-colors"
-                                                    title="Cetak Struk"
-                                                >
-                                                    <IconPrinter size={18} />
-                                                </Link>
+                                            <td className="px-4 py-4">
+                                                <div className="flex items-center justify-center gap-2">
+                                                    <a
+                                                        href={`https://wa.me/?text=${encodeURIComponent(
+                                                            `Invoice ${transaction.invoice}: ${route(
+                                                                "transactions.print",
+                                                                transaction.invoice,
+                                                                true
+                                                            )}`
+                                                        )}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="inline-flex items-center justify-center w-9 h-9 rounded-lg text-green-600 hover:text-green-700 bg-green-50 hover:bg-green-100 dark:bg-green-900/30 dark:hover:bg-green-900/50 transition-colors"
+                                                        title="Bagikan ke WhatsApp"
+                                                    >
+                                                        <IconBrandWhatsapp
+                                                            size={18}
+                                                        />
+                                                    </a>
+                                                    <Link
+                                                        href={route(
+                                                            "transactions.print",
+                                                            transaction.invoice
+                                                        )}
+                                                        className="inline-flex items-center justify-center w-9 h-9 rounded-lg text-slate-500 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-950/50 transition-colors"
+                                                        title="Cetak Struk"
+                                                    >
+                                                        <IconPrinter size={18} />
+                                                    </Link>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
