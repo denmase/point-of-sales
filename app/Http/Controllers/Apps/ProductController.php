@@ -58,6 +58,7 @@ class ProductController extends Controller
          */
         $request->validate([
             'barcode' => 'required|unique:products,barcode',
+            'sku' => 'required|unique:products,sku',
             'title' => 'required',
             'description' => 'required',
             'category_id' => 'required',
@@ -73,6 +74,7 @@ class ProductController extends Controller
         Product::create([
             'image' => $image->hashName(),
             'barcode' => $request->barcode,
+            'sku' => $request->sku,
             'title' => $request->title,
             'description' => $request->description,
             'category_id' => $request->category_id,
@@ -116,6 +118,7 @@ class ProductController extends Controller
          */
         $request->validate([
             'barcode' => 'required|unique:products,barcode,' . $product->id,
+            'sku' => 'required|unique:products,sku,' . $product->id,
             'title' => 'required',
             'description' => 'required',
             'category_id' => 'required',
@@ -138,6 +141,7 @@ class ProductController extends Controller
             $product->update([
                 'image' => $image->hashName(),
                 'barcode' => $request->barcode,
+                'sku' => $request->sku,
                 'title' => $request->title,
                 'description' => $request->description,
                 'category_id' => $request->category_id,
@@ -151,6 +155,7 @@ class ProductController extends Controller
         //update product without image
         $product->update([
             'barcode' => $request->barcode,
+            'sku' => $request->sku,
             'title' => $request->title,
             'description' => $request->description,
             'category_id' => $request->category_id,

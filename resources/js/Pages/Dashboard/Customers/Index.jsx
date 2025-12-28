@@ -24,7 +24,7 @@ function CustomerCard({ customer }) {
             {/* Avatar & Name */}
             <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-accent-400 to-accent-600 flex items-center justify-center text-white text-lg font-bold flex-shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent-400 to-accent-600 flex items-center justify-center text-white text-base font-semibold flex-shrink-0">
                         {customer.name.charAt(0).toUpperCase()}
                     </div>
                     <div>
@@ -181,7 +181,7 @@ export default function Index({ customers }) {
                                         </Table.Td>
                                         <Table.Td>
                                             <div className="flex items-center gap-3">
-                                                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-accent-400 to-accent-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-accent-400 to-accent-600 flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
                                                     {customer.name
                                                         .charAt(0)
                                                         .toUpperCase()}

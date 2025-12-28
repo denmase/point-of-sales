@@ -7,7 +7,6 @@ use App\Models\Profit;
 use App\Models\Product;
 use App\Models\Transaction;
 use App\Models\TransactionDetail;
-use App\Models\User;
 use App\Models\Setting;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +19,7 @@ class DashboardController extends Controller
         $totalCategories   = Category::count();
         $totalProducts     = Product::count();
         $totalTransactions = Transaction::count();
-        $totalUsers        = User::count();
+        $totalCustomers    = Customer::count();
         $totalRevenue      = Transaction::sum('grand_total');
         $totalProfit       = Profit::sum('total');
         $averageOrder      = Transaction::avg('grand_total') ?? 0;
@@ -52,14 +51,15 @@ class DashboardController extends Controller
             ->values();
 
         $topProducts = TransactionDetail::select('product_id', DB::raw('SUM(qty) as qty'), DB::raw('SUM(price) as total'))
-            ->with('product:id,title')
+            ->with('product:id,title,sku')
             ->groupBy('product_id')
             ->orderByDesc('qty')
-            ->take(5)
+            ->take(3)
             ->get()
             ->map(function ($detail) {
                 return [
                     'name'  => $detail->product?->title ?? 'Produk terhapus',
+                    'sku'   => $detail->product?->sku ?? '-',
                     'qty'   => (int) $detail->qty,
                     'total' => (int) $detail->total,
                 ];
@@ -129,7 +129,7 @@ class DashboardController extends Controller
             'totalCategories'     => $totalCategories,
             'totalProducts'       => $totalProducts,
             'totalTransactions'   => $totalTransactions,
-            'totalUsers'          => $totalUsers,
+            'totalCustomers'      => $totalCustomers,
             'revenueTrend'        => $revenueTrend,
             'totalRevenue'        => (int) $totalRevenue,
             'totalProfit'         => (int) $totalProfit,

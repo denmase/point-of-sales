@@ -186,7 +186,7 @@ export default function Dashboard({
     totalCategories,
     totalProducts,
     totalTransactions,
-    totalUsers,
+    totalCustomers,
     revenueTrend,
     totalRevenue,
     totalProfit,
@@ -371,8 +371,8 @@ export default function Dashboard({
                         icon={IconMoneybag}
                     />
                     <InfoCard
-                        title="Total Pengguna"
-                        value={totalUsers}
+                        title="Total Pelanggan"
+                        value={totalCustomers}
                         icon={IconUsers}
                     />
                 </div>
@@ -401,28 +401,36 @@ export default function Dashboard({
                         emptyMessage="Belum ada data"
                     >
                         {topProducts.length > 0 && (
-                            <ul className="space-y-3">
-                                {topProducts
-                                    .slice(0, 5)
-                                    .map((product, index) => (
-                                        <li
-                                            key={index}
-                                            className="flex items-center justify-between"
-                                        >
-                                            <div className="flex items-center gap-2">
-                                                <span className="w-5 h-5 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400 text-xs font-bold flex items-center justify-center">
-                                                    {index + 1}
-                                                </span>
-                                                <span className="text-sm text-slate-700 dark:text-slate-300 truncate max-w-[100px]">
-                                                    {product.name}
-                                                </span>
-                                            </div>
-                                            <span className="text-xs text-slate-500">
-                                                {product.qty}x
+                            <div className="space-y-3">
+                                {topProducts.slice(0, 3).map((product, index) => (
+                                    <div
+                                        key={index}
+                                        className="flex items-start justify-between rounded-xl border border-slate-200 dark:border-slate-800 p-3 bg-slate-50/60 dark:bg-slate-800/40"
+                                    >
+                                        <div className="flex items-start gap-3">
+                                            <span className="w-7 h-7 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400 text-sm font-semibold flex items-center justify-center">
+                                                {index + 1}
                                             </span>
-                                        </li>
-                                    ))}
-                            </ul>
+                                            <div className="space-y-1">
+                                                <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 line-clamp-1">
+                                                    {product.name}
+                                                </p>
+                                                <p className="text-xs text-slate-500 dark:text-slate-400">
+                                                    SKU: {product.sku || "-"}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-base font-semibold text-primary-600 dark:text-primary-400 leading-tight">
+                                                {product.qty}x
+                                            </p>
+                                            <p className="text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                                                Terjual
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         )}
                     </ListCard>
 

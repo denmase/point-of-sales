@@ -12,12 +12,14 @@ export default function Sidebar({ sidebarOpen }) {
     return (
         <div
             className={`
-            ${sidebarOpen ? "w-[260px]" : "w-[80px]"}
-            hidden md:flex flex-col min-h-screen
-            border-r border-slate-200 dark:border-slate-800
-            bg-white dark:bg-slate-900
-            transition-all duration-300 ease-in-out
-        `}
+                ${sidebarOpen ? "translate-x-0 w-[260px]" : "-translate-x-full w-[260px]"}
+                md:translate-x-0 ${sidebarOpen ? "md:w-[260px]" : "md:w-[80px]"}
+                fixed md:relative inset-y-0 left-0 z-40
+                flex flex-col min-h-screen
+                border-r border-slate-200 dark:border-slate-800
+                bg-white dark:bg-slate-900
+                transition-all duration-300 ease-in-out
+            `}
         >
             {/* Logo */}
             <div className="flex items-center justify-center h-16 border-b border-slate-100 dark:border-slate-800">
@@ -37,20 +39,6 @@ export default function Sidebar({ sidebarOpen }) {
                         <span className="text-white font-bold text-sm">K</span>
                     </div>
                 )}
-            </div>
-
-            {/* User Avatar */}
-            <div className="p-3 border-b border-slate-100 dark:border-slate-800 flex justify-center">
-                <img
-                    src={
-                        auth.user.avatar ||
-                        `https://ui-avatars.com/api/?name=${auth.user.name}&background=6366f1&color=fff`
-                    }
-                    className={`rounded-full ring-2 ring-slate-100 dark:ring-slate-800 ${
-                        sidebarOpen ? "w-10 h-10" : "w-8 h-8"
-                    }`}
-                    alt="User"
-                />
             </div>
 
             {/* Navigation */}

@@ -86,7 +86,7 @@ export default function Print({ transaction }) {
             <div className="min-h-screen bg-slate-100 dark:bg-slate-950 py-8 px-4 print:bg-white print:p-0">
                 <div className="max-w-4xl mx-auto space-y-6">
                     {/* Action Bar */}
-                    <div className="flex flex-wrap items-center justify-between gap-3 print:hidden">
+                    <div className="flex flex-wrap items-start justify-between gap-3 print:hidden">
                         <Link
                             href={route("transactions.index")}
                             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
@@ -95,9 +95,9 @@ export default function Print({ transaction }) {
                             Kembali ke kasir
                         </Link>
 
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
                             {/* Print Mode Selector */}
-                            <div className="flex bg-slate-200 dark:bg-slate-800 rounded-xl p-1">
+                            <div className="flex bg-slate-200 dark:bg-slate-800 rounded-xl p-1 w-full sm:w-auto">
                                 <button
                                     onClick={() => setPrintMode("invoice")}
                                     className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${
@@ -161,7 +161,7 @@ export default function Print({ transaction }) {
                                     href={transaction.payment_url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-primary-200 dark:border-primary-800 text-sm font-semibold text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-950/50 transition-colors"
+                                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-primary-200 dark:border-primary-800 text-sm font-semibold text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-950/50 transition-colors w-full sm:w-auto"
                                 >
                                     <IconExternalLink size={18} />
                                     Pembayaran
@@ -175,7 +175,7 @@ export default function Print({ transaction }) {
                                         onClick={() =>
                                             setShowConfirmModal(true)
                                         }
-                                        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-success-500 hover:bg-success-600 text-sm font-semibold text-white transition-colors"
+                                        className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-success-500 hover:bg-success-600 text-sm font-semibold text-white transition-colors w-full sm:w-auto"
                                     >
                                         <IconCheck size={18} />
                                         Konfirmasi Bayar
@@ -185,7 +185,7 @@ export default function Print({ transaction }) {
                             <button
                                 type="button"
                                 onClick={handlePrint}
-                                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary-500 hover:bg-primary-600 text-sm font-semibold text-white shadow-lg shadow-primary-500/30 transition-colors"
+                                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary-500 hover:bg-primary-600 text-sm font-semibold text-white shadow-lg shadow-primary-500/30 transition-colors w-full sm:w-auto"
                             >
                                 <IconPrinter size={18} />
                                 Cetak

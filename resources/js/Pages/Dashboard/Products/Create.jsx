@@ -21,6 +21,7 @@ export default function Create({ categories }) {
     const { data, setData, post, processing } = useForm({
         image: "",
         barcode: "",
+        sku: "",
         title: "",
         category_id: "",
         description: "",
@@ -133,13 +134,21 @@ export default function Create({ categories }) {
                                 </div>
                                 <Input
                                     type="text"
-                                    label="Barcode / SKU"
+                                    label="Barcode"
                                     value={data.barcode}
                                     onChange={(e) =>
                                         setData("barcode", e.target.value)
                                     }
                                     errors={errors.barcode}
                                     placeholder="Masukkan kode produk"
+                                />
+                                <Input
+                                    type="text"
+                                    label="SKU"
+                                    value={data.sku}
+                                    onChange={(e) => setData("sku", e.target.value)}
+                                    errors={errors.sku}
+                                    placeholder="Masukkan SKU unik"
                                 />
                                 <Input
                                     type="text"

@@ -123,10 +123,19 @@ function ProductCard({
                 <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200 line-clamp-2 mb-1">
                     {product.title}
                 </h3>
-                {product.barcode && (
-                    <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mb-2">
-                        {product.barcode}
-                    </p>
+                {(product.barcode || product.sku) && (
+                    <div className="space-y-0.5 mb-2">
+                        {product.barcode && (
+                            <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1">
+                                Barcode: {product.barcode}
+                            </p>
+                        )}
+                        {product.sku && (
+                            <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1">
+                                SKU: {product.sku}
+                            </p>
+                        )}
+                    </div>
                 )}
 
                 {/* Price Section - Mobile Friendly */}
@@ -218,10 +227,10 @@ export default function Index({ products }) {
                             {products.total} produk terdaftar
                         </p>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
                         <button
                             onClick={handlePrintAllBarcodes}
-                            className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                            className="inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors w-full sm:w-auto"
                         >
                             <IconBarcode size={18} />
                             Cetak All Barcode
@@ -232,7 +241,7 @@ export default function Index({ products }) {
                                 <IconCirclePlus size={18} strokeWidth={1.5} />
                             }
                             className={
-                                "bg-primary-500 hover:bg-primary-600 text-white shadow-lg shadow-primary-500/30"
+                                "bg-primary-500 hover:bg-primary-600 text-white shadow-lg shadow-primary-500/30 w-full sm:w-auto justify-center"
                             }
                             label={"Tambah Produk"}
                             href={route("products.create")}
@@ -351,7 +360,7 @@ export default function Index({ products }) {
                                                 <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 overflow-hidden flex-shrink-0">
                                                     {product.image ? (
                                                         <img
-                                                            src={`/storage/products/${product.image}`}
+                                                            src={getProductImageUrl(product.image)}
                                                             alt={product.title}
                                                             className="w-full h-full object-cover"
                                                         />
@@ -368,9 +377,14 @@ export default function Index({ products }) {
                                                     <p className="text-sm font-medium text-slate-800 dark:text-slate-200">
                                                         {product.title}
                                                     </p>
-                                                    <p className="text-xs text-slate-500">
-                                                        {product.barcode}
-                                                    </p>
+                                                    <div className="text-xs text-slate-500 dark:text-slate-400 space-y-0.5">
+                                                        {product.barcode && (
+                                                            <p>
+                                                                Barcode: {product.barcode}
+                                                            </p>
+                                                        )}
+                                                        {product.sku && <p>SKU: {product.sku}</p>}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </Table.Td>
