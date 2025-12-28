@@ -12,6 +12,7 @@ import {
     IconX,
     IconUser,
 } from "@tabler/icons-react";
+import Notification from "@/Components/Dashboard/Notification";
 
 export default function POSLayout({ children }) {
     const { auth } = usePage().props;
@@ -119,6 +120,11 @@ export default function POSLayout({ children }) {
                     {/* Divider */}
                     <div className="hidden lg:block w-px h-8 bg-slate-200 dark:bg-slate-700" />
 
+                    {/* Notifications (desktop) */}
+                    <div className="hidden md:flex">
+                        <Notification />
+                    </div>
+
                     {/* Theme Toggle */}
                     <button
                         onClick={themeSwitcher}
@@ -131,6 +137,11 @@ export default function POSLayout({ children }) {
                             <IconMoon size={20} className="text-slate-500" />
                         )}
                     </button>
+
+                    {/* Notifications (mobile) */}
+                    <div className="flex md:hidden">
+                        <Notification />
+                    </div>
 
                     {/* User Info - Simplified */}
                     <div className="flex items-center gap-2 pl-2 lg:pl-3 border-l border-slate-200 dark:border-slate-700">

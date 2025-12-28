@@ -29,6 +29,7 @@ import {
     IconCash,
     IconCreditCard,
     IconBuildingBank,
+    IconAlertTriangle,
 } from "@tabler/icons-react";
 
 const formatPrice = (value = 0) =>
@@ -49,7 +50,7 @@ export default function Index({
     defaultPaymentGateway = "cash",
     bankAccounts = [],
 }) {
-    const { auth, errors } = usePage().props;
+    const { auth, errors, lowStockNotifications = [] } = usePage().props;
 
     // State
     const [searchQuery, setSearchQuery] = useState("");
@@ -103,6 +104,47 @@ export default function Index({
         enabled: true,
         minLength: 3,
     });
+
+    const LowStockAlerts = ({ items = [] }) => {
+        if (!items.length) return null;
+
+        return (
+            <div className="rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/30 p-3 space-y-3">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <span className="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center">
+                            <IconAlertTriangle size={18} />
+                        </span>
+                        <div>
+                            <p className="text-sm font-semibold text-rose-700 dark:text-rose-300">
+                                Notifikasi Stok
+                            </p>
+                            <p className="text-xs text-rose-600 dark:text-rose-400">
+                                {items.length} produk habis
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                    {items.map((item) => (
+                        <div
+                            key={item.id}
+                            className="flex items-start justify-between gap-2 rounded-lg bg-white dark:bg-slate-900 p-2.5 border border-rose-100 dark:border-rose-900/40"
+                        >
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 truncate">
+                                    {item.title}
+                                </p>
+                                <p className="text-xs text-slate-500 dark:text-slate-400">
+                                    Stok: {item.stock} {item.time && `• ${item.time}`}
+                                </p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    };
 
     // Calculations
     const discount = useMemo(
@@ -456,12 +498,24 @@ export default function Index({
                         />
                     </div>
 
-                    {/* Held Transactions - Show if any */}
-                    {heldCarts.length > 0 && (
-                        <HeldTransactions
-                            heldCarts={heldCarts}
-                            hasActiveCart={carts.length > 0}
-                        />
+                    {/* Held Transactions & Alerts */}
+                    {(heldCarts.length > 0 ||
+                        lowStockNotifications.length > 0) && (
+                        <div className="p-3 border-b border-slate-200 dark:border-slate-800">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 items-start">
+                                {heldCarts.length > 0 && (
+                                    <HeldTransactions
+                                        heldCarts={heldCarts}
+                                        hasActiveCart={carts.length > 0}
+                                    />
+                                )}
+                                {lowStockNotifications.length > 0 && (
+                                    <LowStockAlerts
+                                        items={lowStockNotifications}
+                                    />
+                                )}
+                            </div>
+                        </div>
                     )}
 
                     {/* Cart Items - Scrollable */}
