@@ -15,6 +15,17 @@ class Customer extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'no_telp', 'address'
+        'name',
+        'no_telp',
+        'address',
+        'province_id',
+        'province_name',
+        'regency_id',
+        'regency_name',
+        'district_id',
+        'district_name',
+        'village_id',
+        'village_name',
+        'postal_code',
     ];
 }

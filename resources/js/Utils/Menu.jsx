@@ -13,6 +13,7 @@ import {
     IconFileDescription,
     IconFolder,
     IconLayout2,
+    IconBuildingStore,
     IconSchool,
     IconShoppingCart,
     IconTable,
@@ -166,6 +167,13 @@ export default function Menu() {
                     active: url === "/dashboard/settings/payments",
                     icon: <IconCreditCard size={20} strokeWidth={1.5} />,
                     permissions: hasAnyPermission(["payment-settings-access"]),
+                },
+                {
+                    title: "Profil Toko",
+                    href: route("settings.store"),
+                    active: url === "/dashboard/settings/store",
+                    icon: <IconBuildingStore size={20} strokeWidth={1.5} />,
+                    permissions: hasAnyPermission(["dashboard-access"]),
                 },
                 {
                     title: "Rekening Bank",

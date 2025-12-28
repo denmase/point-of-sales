@@ -56,6 +56,21 @@ class HandleInertiaRequests extends Middleware
                 });
         }
 
+        $logo = \App\Models\Setting::get('store_logo');
+        if ($logo && !str_starts_with($logo, 'http') && !str_starts_with($logo, '/storage')) {
+            $logo = asset('storage/' . ltrim($logo, '/'));
+        }
+
+        $storeProfile = [
+            'name'    => \App\Models\Setting::get('store_name', 'Toko Anda'),
+            'logo'    => $logo,
+            'address' => \App\Models\Setting::get('store_address', ''),
+            'phone'   => \App\Models\Setting::get('store_phone', ''),
+            'email'   => \App\Models\Setting::get('store_email', ''),
+            'website' => \App\Models\Setting::get('store_website', ''),
+            'city'    => \App\Models\Setting::get('store_city', ''),
+        ];
+
         return [
             ...parent::share($request),
             'auth' => [
@@ -64,6 +79,7 @@ class HandleInertiaRequests extends Middleware
                 'super' => $request->user() ? $request->user()->isSuperAdmin() : false,
             ],
             'lowStockNotifications' => $lowStockNotifications,
+            'storeProfile'          => $storeProfile,
         ];
     }
 }

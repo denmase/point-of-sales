@@ -6,6 +6,10 @@ use App\Models\Customer;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Laravolt\Indonesia\Models\Province;
+use Laravolt\Indonesia\Models\Regency;
+use Laravolt\Indonesia\Models\District;
+use Laravolt\Indonesia\Models\Village;
 
 class CustomerController extends Controller
 {
@@ -34,7 +38,11 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Dashboard/Customers/Create');
+        $provinces = Province::select('id', 'name')->orderBy('name')->get();
+
+        return Inertia::render('Dashboard/Customers/Create', [
+            'provinces' => $provinces,
+        ]);
     }
 
     /**
@@ -52,13 +60,32 @@ class CustomerController extends Controller
             'name'    => 'required',
             'no_telp' => 'required|unique:customers',
             'address' => 'required',
+            'province_id' => 'required|string',
+            'regency_id'  => 'required|string',
+            'district_id' => 'required|string',
+            'village_id'  => 'required|string',
+            'postal_code' => 'nullable|string|max:10',
         ]);
+
+        $province = Province::find($request->province_id);
+        $regency  = Regency::find($request->regency_id);
+        $district = District::find($request->district_id);
+        $village  = Village::find($request->village_id);
 
         //create customer
         Customer::create([
             'name'    => $request->name,
             'no_telp' => $request->no_telp,
             'address' => $request->address,
+            'province_id' => $request->province_id,
+            'province_name' => $province?->name,
+            'regency_id' => $request->regency_id,
+            'regency_name' => $regency?->name,
+            'district_id' => $request->district_id,
+            'district_name' => $district?->name,
+            'village_id' => $request->village_id,
+            'village_name' => $village?->name,
+            'postal_code' => $request->postal_code ?? $village?->postal_code,
         ]);
 
         //redirect
@@ -77,13 +104,32 @@ class CustomerController extends Controller
             'name'    => 'required|string|max:255',
             'no_telp' => 'required|string|unique:customers,no_telp',
             'address' => 'required|string',
+            'province_id' => 'nullable|string',
+            'regency_id'  => 'nullable|string',
+            'district_id' => 'nullable|string',
+            'village_id'  => 'nullable|string',
+            'postal_code' => 'nullable|string|max:10',
         ]);
 
         try {
+            $province = $validated['province_id'] ? Province::find($validated['province_id']) : null;
+            $regency  = $validated['regency_id'] ? Regency::find($validated['regency_id']) : null;
+            $district = $validated['district_id'] ? District::find($validated['district_id']) : null;
+            $village  = $validated['village_id'] ? Village::find($validated['village_id']) : null;
+
             $customer = Customer::create([
-                'name'    => $validated['name'],
-                'no_telp' => $validated['no_telp'],
-                'address' => $validated['address'],
+                'name'           => $validated['name'],
+                'no_telp'        => $validated['no_telp'],
+                'address'        => $validated['address'],
+                'province_id'    => $validated['province_id'] ?? null,
+                'province_name'  => $province?->name,
+                'regency_id'     => $validated['regency_id'] ?? null,
+                'regency_name'   => $regency?->name,
+                'district_id'    => $validated['district_id'] ?? null,
+                'district_name'  => $district?->name,
+                'village_id'     => $validated['village_id'] ?? null,
+                'village_name'   => $village?->name,
+                'postal_code'    => $validated['postal_code'] ?? $village?->postal_code,
             ]);
 
             return response()->json([
@@ -113,8 +159,23 @@ class CustomerController extends Controller
      */
     public function edit(Customer $customer)
     {
+        $provinces = Province::select('id', 'name')->orderBy('name')->get();
+        $regencies = $customer->province_id
+            ? Regency::where('province_id', $customer->province_id)->select('id', 'name')->orderBy('name')->get()
+            : [];
+        $districts = $customer->regency_id
+            ? District::where('regency_id', $customer->regency_id)->select('id', 'name')->orderBy('name')->get()
+            : [];
+        $villages = $customer->district_id
+            ? Village::where('district_id', $customer->district_id)->select('id', 'name', 'postal_code')->orderBy('name')->get()
+            : [];
+
         return Inertia::render('Dashboard/Customers/Edit', [
             'customer' => $customer,
+            'provinces' => $provinces,
+            'regencies' => $regencies,
+            'districts' => $districts,
+            'villages' => $villages,
         ]);
     }
 
@@ -134,13 +195,32 @@ class CustomerController extends Controller
             'name'    => 'required',
             'no_telp' => 'required|unique:customers,no_telp,' . $customer->id,
             'address' => 'required',
+            'province_id' => 'required|string',
+            'regency_id'  => 'required|string',
+            'district_id' => 'required|string',
+            'village_id'  => 'required|string',
+            'postal_code' => 'nullable|string|max:10',
         ]);
+
+        $province = Province::find($request->province_id);
+        $regency  = Regency::find($request->regency_id);
+        $district = District::find($request->district_id);
+        $village  = Village::find($request->village_id);
 
         //update customer
         $customer->update([
             'name'    => $request->name,
             'no_telp' => $request->no_telp,
             'address' => $request->address,
+            'province_id' => $request->province_id,
+            'province_name' => $province?->name,
+            'regency_id' => $request->regency_id,
+            'regency_name' => $regency?->name,
+            'district_id' => $request->district_id,
+            'district_name' => $district?->name,
+            'village_id' => $request->village_id,
+            'village_name' => $village?->name,
+            'postal_code' => $request->postal_code ?? $village?->postal_code,
         ]);
 
         //redirect

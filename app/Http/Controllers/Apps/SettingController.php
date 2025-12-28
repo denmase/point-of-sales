@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
@@ -38,5 +39,60 @@ class SettingController extends Controller
         );
 
         return back()->with('success', 'Target berhasil disimpan');
+    }
+
+    /**
+     * Store profile settings page
+     */
+    public function storeProfile()
+    {
+        $settings = [
+            'store_name'    => Setting::get('store_name', ''),
+            'store_logo'    => Setting::get('store_logo', ''),
+            'store_address' => Setting::get('store_address', ''),
+            'store_phone'   => Setting::get('store_phone', ''),
+            'store_email'   => Setting::get('store_email', ''),
+            'store_website' => Setting::get('store_website', ''),
+            'store_city'    => Setting::get('store_city', ''),
+        ];
+
+        return Inertia::render('Dashboard/Settings/Store', [
+            'settings' => $settings,
+        ]);
+    }
+
+    /**
+     * Update store profile settings
+     */
+    public function updateStoreProfile(Request $request)
+    {
+        $request->validate([
+            'store_name'    => 'required|string|max:255',
+            'store_address' => 'required|string|max:500',
+            'store_phone'   => 'nullable|string|max:50',
+            'store_email'   => 'nullable|email|max:255',
+            'store_website' => 'nullable|string|max:255',
+            'store_city'    => 'nullable|string|max:255',
+            'store_logo'    => 'nullable|image|max:2048',
+        ]);
+
+        $logoPath = Setting::get('store_logo');
+
+        if ($request->file('store_logo')) {
+            if ($logoPath) {
+                Storage::disk('public')->delete($logoPath);
+            }
+            $logoPath = $request->file('store_logo')->store('store', 'public');
+        }
+
+        Setting::set('store_name', $request->store_name, 'Nama toko');
+        Setting::set('store_address', $request->store_address, 'Alamat toko');
+        Setting::set('store_phone', $request->store_phone, 'Telepon toko');
+        Setting::set('store_email', $request->store_email, 'Email toko');
+        Setting::set('store_website', $request->store_website, 'Website toko');
+        Setting::set('store_city', $request->store_city, 'Kota/Kabupaten toko');
+        Setting::set('store_logo', $logoPath, 'Logo toko');
+
+        return back()->with('success', 'Profil toko berhasil diperbarui');
     }
 }

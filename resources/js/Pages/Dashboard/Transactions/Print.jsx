@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Head, Link, router } from "@inertiajs/react";
+import { Head, Link, router, usePage } from "@inertiajs/react";
 import {
     IconArrowLeft,
     IconPrinter,
@@ -17,6 +17,7 @@ import ThermalReceipt, {
 import ShippingLabel from "@/Components/Receipt/ShippingLabel";
 
 export default function Print({ transaction }) {
+    const { storeProfile } = usePage().props;
     const [printMode, setPrintMode] = useState("invoice"); // 'invoice' | 'thermal80' | 'thermal58'
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [isConfirming, setIsConfirming] = useState(false);
@@ -201,15 +202,15 @@ export default function Print({ transaction }) {
                                 {printMode === "thermal80" ? (
                                     <ThermalReceipt
                                         transaction={transaction}
-                                        storeName="TOKO ANDA"
-                                        storeAddress="Jl. Contoh No. 123"
-                                        storePhone="08123456789"
+                                        storeName={storeProfile?.name || "Toko Anda"}
+                                        storeAddress={storeProfile?.address || ""}
+                                        storePhone={storeProfile?.phone || ""}
                                     />
                                 ) : (
                                     <ThermalReceipt58mm
                                         transaction={transaction}
-                                        storeName="TOKO"
-                                        storePhone="08123456789"
+                                        storeName={storeProfile?.name || "Toko"}
+                                        storePhone={storeProfile?.phone || ""}
                                     />
                                 )}
                             </div>
