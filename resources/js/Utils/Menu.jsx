@@ -23,6 +23,8 @@ import {
     IconUsers,
     IconUsersPlus,
     IconFileInvoice,
+    IconBuildingWarehouse,
+    IconCurrencyDollar,
 } from "@tabler/icons-react";
 import hasAnyPermission from "./Permission";
 import React from "react";
@@ -96,6 +98,20 @@ export default function Menu() {
                     href: route("receivables.index"),
                     active: url.startsWith("/dashboard/receivables"),
                     icon: <IconFileInvoice size={20} strokeWidth={1.5} />,
+                    permissions: hasAnyPermission(["transactions-access"]),
+                },
+                {
+                    title: "Supplier",
+                    href: route("suppliers.index"),
+                    active: url.startsWith("/dashboard/suppliers"),
+                    icon: <IconBuildingWarehouse size={20} strokeWidth={1.5} />,
+                    permissions: hasAnyPermission(["transactions-access"]),
+                },
+                {
+                    title: "Hutang Supplier",
+                    href: route("payables.index"),
+                    active: url.startsWith("/dashboard/payables"),
+                    icon: <IconCurrencyDollar size={20} strokeWidth={1.5} />,
                     permissions: hasAnyPermission(["transactions-access"]),
                 },
             ],
