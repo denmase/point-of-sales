@@ -404,12 +404,14 @@ export default function Index({
                         }`}
                     >
                         <IconReceipt size={18} />
-                        <span>Keranjang</span>
-                        {cartCount > 0 && (
-                            <span className="absolute top-2 right-1/4 w-5 h-5 flex items-center justify-center text-[11px] font-bold bg-primary-500 text-white rounded-full">
-                                {cartCount}
-                            </span>
-                        )}
+                        <span className="relative inline-flex items-center gap-1">
+                            Keranjang
+                            {cartCount > 0 && (
+                                <span className="inline-flex items-center justify-center px-1.5 min-w-[20px] h-5 text-[11px] font-bold bg-primary-500 text-white rounded-full">
+                                    {cartCount}
+                                </span>
+                            )}
+                        </span>
                     </button>
                 </div>
 
