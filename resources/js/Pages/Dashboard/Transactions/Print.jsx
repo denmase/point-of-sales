@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Head, Link, router, usePage } from "@inertiajs/react";
 import {
     IconArrowLeft,
@@ -40,6 +40,18 @@ export default function Print({ transaction }) {
 
     const items = transaction?.details ?? [];
 
+    const store = useMemo(
+        () => ({
+            name: storeProfile?.name || "Toko Anda",
+            logo: storeProfile?.logo || null,
+            address: storeProfile?.address || "",
+            phone: storeProfile?.phone || "",
+            email: storeProfile?.email || "",
+            website: storeProfile?.website || "",
+        }),
+        [storeProfile]
+    );
+
     const paymentLabels = {
         cash: "Tunai",
         bank_transfer: "Transfer Bank",
@@ -78,6 +90,28 @@ export default function Print({ transaction }) {
 
     const handlePrint = () => {
         window.print();
+    };
+
+    const SimpleBarcode = ({ value }) => {
+        const bars = useMemo(() => {
+            const data = value || "";
+            return data.split("").map((char, idx) => {
+                const weight = (char.charCodeAt(0) + idx * 17) % 5;
+                return 2 + weight; // 2-6px width
+            });
+        }, [value]);
+
+        return (
+            <div className="flex items-end gap-[2px] mt-3">
+                {bars.map((w, i) => (
+                    <span
+                        key={i}
+                        style={{ width: `${w}px` }}
+                        className="h-12 bg-slate-800 dark:bg-slate-100 block"
+                    />
+                ))}
+            </div>
+        );
     };
 
     return (
@@ -195,22 +229,25 @@ export default function Print({ transaction }) {
                     </div>
 
                     {/* Thermal Receipt Preview */}
-                    {(printMode === "thermal80" ||
-                        printMode === "thermal58") && (
+                    {(printMode === "thermal80" || printMode === "thermal58") && (
                         <div className="flex justify-center print:block">
                             <div className="bg-white rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xl p-4 print:shadow-none print:border-0 print:p-0 print:rounded-none">
                                 {printMode === "thermal80" ? (
                                     <ThermalReceipt
                                         transaction={transaction}
-                                        storeName={storeProfile?.name || "Toko Anda"}
-                                        storeAddress={storeProfile?.address || ""}
-                                        storePhone={storeProfile?.phone || ""}
+                                        storeName={store.name}
+                                        storeAddress={store.address}
+                                        storePhone={store.phone}
+                                        storeEmail={store.email}
+                                        storeWebsite={store.website}
                                     />
                                 ) : (
                                     <ThermalReceipt58mm
                                         transaction={transaction}
-                                        storeName={storeProfile?.name || "Toko"}
-                                        storePhone={storeProfile?.phone || ""}
+                                        storeName={store.name}
+                                        storePhone={store.phone}
+                                        storeEmail={store.email}
+                                        storeWebsite={store.website}
                                     />
                                 )}
                             </div>
@@ -221,7 +258,10 @@ export default function Print({ transaction }) {
                     {printMode === "shipping" && (
                         <div className="flex justify-center print:block">
                             <div className="bg-white rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xl p-6 print:shadow-none print:border-0 print:p-0 print:rounded-none">
-                                <ShippingLabel transaction={transaction} />
+                                <ShippingLabel
+                                    transaction={transaction}
+                                    store={store}
+                                />
                             </div>
                         </div>
                     )}
@@ -231,9 +271,54 @@ export default function Print({ transaction }) {
                         <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xl print:shadow-none print:border-slate-300">
                             {/* Header */}
                             <div className="bg-gradient-to-r from-primary-500 to-primary-700 px-6 py-6 text-white print:bg-slate-100 print:text-slate-900">
-                                <div className="flex flex-wrap items-start justify-between gap-4">
-                                    <div>
-                                        <div className="flex items-center gap-2 mb-2">
+                                <div className="flex flex-wrap items-start justify-between gap-6">
+                                    <div className="flex items-start gap-3">
+                                        <div className="w-14 h-14 border border-white/30 bg-white/10 flex items-center justify-center p-1">
+                                            {store.logo ? (
+                                                <img
+                                                    src={store.logo}
+                                                    alt={store.name}
+                                                    className="max-w-full max-h-full object-contain"
+                                                />
+                                            ) : (
+                                                <span className="text-lg font-bold text-white print:text-slate-800">
+                                                    {store.name.charAt(0)}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <div className="text-white print:text-slate-800 space-y-1">
+                                            <p className="text-lg font-bold">
+                                                {store.name}
+                                            </p>
+                                            {store.address && (
+                                                <p className="text-xs opacity-90">
+                                                    {store.address}
+                                                </p>
+                                            )}
+                                            {(store.phone ||
+                                                store.email ||
+                                                store.website) && (
+                                                <p className="text-xs opacity-90 space-x-2">
+                                                    {store.phone && (
+                                                        <span>
+                                                            Telp: {store.phone}
+                                                        </span>
+                                                    )}
+                                                    {store.email && (
+                                                        <span>
+                                                            Email: {store.email}
+                                                        </span>
+                                                    )}
+                                                    {store.website && (
+                                                        <span>{store.website}</span>
+                                                    )}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div className="text-right">
+                                        <div className="flex items-center gap-2 mb-2 justify-end">
                                             <IconReceipt size={24} />
                                             <span className="text-sm font-medium opacity-90 print:opacity-100">
                                                 INVOICE
@@ -247,17 +332,16 @@ export default function Print({ transaction }) {
                                                 transaction.created_at
                                             )}
                                         </p>
-                                    </div>
-
-                                    <div className="text-right">
-                                        <span
-                                            className={`inline-block px-3 py-1 text-xs font-semibold rounded-full ${paymentStatusColor}`}
-                                        >
-                                            {paymentStatusLabel}
-                                        </span>
-                                        <p className="text-sm opacity-80 print:opacity-100 mt-2">
-                                            {paymentMethodLabel}
-                                        </p>
+                                        <div className="mt-2">
+                                            <span
+                                                className={`inline-block px-3 py-1 text-xs font-semibold rounded-full ${paymentStatusColor}`}
+                                            >
+                                                {paymentStatusLabel}
+                                            </span>
+                                            <p className="text-sm opacity-80 print:opacity-100 mt-2">
+                                                {paymentMethodLabel}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -445,11 +529,17 @@ export default function Print({ transaction }) {
                                 </div>
                             </div>
 
-                            {/* Footer */}
-                            <div className="px-6 py-4 text-center border-t border-slate-100 dark:border-slate-800">
-                                <p className="text-xs text-slate-400 dark:text-slate-500 uppercase tracking-widest">
-                                    Terima kasih telah berbelanja
+                            {/* Barcode + Footer */}
+                            <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800">
+                                <p className="text-xs text-slate-500 dark:text-slate-400">
+                                    Invoice: {transaction.invoice}
                                 </p>
+                                <SimpleBarcode value={transaction.invoice} />
+                                <div className="text-center mt-4">
+                                    <p className="text-xs text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                                        Terima kasih telah berbelanja
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     )}

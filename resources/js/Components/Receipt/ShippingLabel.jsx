@@ -11,7 +11,7 @@ import {
  * Shipping Label Component
  * Size: 150x100mm for standard shipping labels
  */
-export default function ShippingLabel({ transaction }) {
+export default function ShippingLabel({ transaction, store = {} }) {
     const formatPrice = (price = 0) =>
         price.toLocaleString("id-ID", {
             style: "currency",
@@ -33,6 +33,29 @@ export default function ShippingLabel({ transaction }) {
         window.print();
     };
 
+    const SimpleBarcode = ({ value }) => {
+        const bars = (value || "").split("").map((char, idx) => {
+            const weight = (char.charCodeAt(0) + idx * 17) % 4;
+            return 2 + weight;
+        });
+
+        return (
+            <div className="flex items-end gap-[2px] mt-1 justify-end">
+                {bars.map((w, i) => (
+                    <span
+                        key={i}
+                        style={{ width: `${w}px` }}
+                        className="h-8 bg-black block"
+                    />
+                ))}
+            </div>
+        );
+    };
+
+    const storeName = store?.name || "TOKO";
+    const storeInitial = storeName?.[0] || "T";
+    const storeLogo = store?.logo;
+
     // Get customer details
     const customer = transaction?.customer || {};
     const hasCustomer = customer?.name;
@@ -44,7 +67,7 @@ export default function ShippingLabel({ transaction }) {
                 {`
                     @media print {
                         @page {
-                            size: 150mm 100mm;
+                            size: 160mm 110mm;
                             margin: 0;
                         }
                         body {
@@ -74,21 +97,53 @@ export default function ShippingLabel({ transaction }) {
 
             {/* Shipping Label */}
             <div
-                className="shipping-label bg-white border-2 border-slate-300 p-4"
-                style={{ width: "150mm", height: "100mm" }}
+                className="shipping-label bg-white border-2 border-slate-300 p-5"
+                style={{ width: "160mm", height: "110mm" }}
             >
-                {/* Header */}
-                <div className="flex items-center justify-between border-b border-slate-200 pb-2 mb-3">
-                    <div className="flex items-center gap-2">
-                        <IconTruck size={24} className="text-primary-500" />
-                        <span className="text-lg font-bold text-slate-800">
-                            RESI PENGIRIMAN
-                        </span>
+                {/* Header with store profile */}
+                <div className="flex items-start justify-between border-b border-slate-200 pb-3 mb-3">
+                    <div className="flex items-start gap-3">
+                        <div className="w-14 h-14 border border-slate-200 bg-white flex items-center justify-center p-1">
+                            {storeLogo ? (
+                                <img
+                                    src={storeLogo}
+                                    alt={storeName}
+                                    className="max-w-full max-h-full object-contain"
+                                />
+                            ) : (
+                                <span className="text-lg font-bold text-primary-600">
+                                    {storeInitial}
+                                </span>
+                            )}
+                        </div>
+                        <div className="space-y-1">
+                            <p className="text-lg font-bold text-slate-800">
+                                {storeName}
+                            </p>
+                            {store.address && (
+                                <p className="text-xs text-slate-600 leading-snug">
+                                    {store.address}
+                                </p>
+                            )}
+                            <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-slate-600">
+                                {store.phone && (
+                                    <span className="flex items-center gap-1">
+                                        <IconPhone size={12} />
+                                        {store.phone}
+                                    </span>
+                                )}
+                                {store.email && <span>{store.email}</span>}
+                                {store.website && <span>{store.website}</span>}
+                            </div>
+                        </div>
                     </div>
                     <div className="text-right">
-                        <p className="text-xs text-slate-500">No. Invoice</p>
-                        <p className="text-sm font-bold text-slate-800">
+                        <p className="text-xs text-slate-500">Invoice</p>
+                        <p className="text-base font-bold text-slate-800">
                             {transaction?.invoice || "-"}
+                        </p>
+                        <p className="text-xs text-slate-500 mt-1">
+                            {formatDate(transaction?.created_at)}
                         </p>
                     </div>
                 </div>
@@ -182,13 +237,23 @@ export default function ShippingLabel({ transaction }) {
                 </div>
 
                 {/* Footer */}
-                <div className="mt-3 pt-2 border-t border-dashed border-slate-300 flex justify-between items-center">
-                    <p className="text-xs text-slate-400">
-                        Kasir: {transaction?.cashier?.name || "-"}
-                    </p>
-                    <p className="text-xs text-slate-400">
-                        Dicetak: {new Date().toLocaleDateString("id-ID")}
-                    </p>
+                <div className="mt-3 pt-3 border-t border-dashed border-slate-300">
+                    <div className="flex justify-between items-center">
+                        <p className="text-xs text-slate-400">
+                            Kasir: {transaction?.cashier?.name || "-"}
+                        </p>
+                        <p className="text-xs text-slate-400">
+                            Dicetak: {new Date().toLocaleDateString("id-ID")}
+                        </p>
+                    </div>
+                    <div className="flex justify-end mt-1">
+                        <div className="inline-flex flex-col items-end">
+                            <SimpleBarcode value={transaction?.invoice} />
+                            <span className="text-[11px] text-slate-500 mt-0.5">
+                                {transaction?.invoice}
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </>

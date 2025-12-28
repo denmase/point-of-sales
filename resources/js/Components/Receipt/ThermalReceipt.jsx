@@ -15,6 +15,8 @@ export default function ThermalReceipt({
     storeName = "TOKO ANDA",
     storeAddress = "",
     storePhone = "",
+    storeEmail = "",
+    storeWebsite = "",
 }) {
     const formatPrice = (price = 0) => {
         return "Rp " + Number(price || 0).toLocaleString("id-ID");
@@ -51,6 +53,25 @@ export default function ThermalReceipt({
     const line = "=".repeat(32);
     const dashLine = "-".repeat(32);
 
+    const SimpleBarcode = ({ value }) => {
+        const bars = (value || "").split("").map((char, idx) => {
+            const weight = (char.charCodeAt(0) + idx * 17) % 5;
+            return 2 + weight;
+        });
+
+        return (
+            <div className="flex items-end justify-center gap-[2px] mt-2">
+                {bars.map((w, i) => (
+                    <span
+                        key={i}
+                        style={{ width: `${w}px` }}
+                        className="h-10 bg-black block"
+                    />
+                ))}
+            </div>
+        );
+    };
+
     return (
         <div
             className="thermal-receipt font-mono text-xs leading-tight"
@@ -61,6 +82,8 @@ export default function ThermalReceipt({
                 <p className="text-sm font-bold">{storeName}</p>
                 {storeAddress && <p className="text-xs">{storeAddress}</p>}
                 {storePhone && <p className="text-xs">Telp: {storePhone}</p>}
+                {storeEmail && <p className="text-xs">Email: {storeEmail}</p>}
+                {storeWebsite && <p className="text-xs">{storeWebsite}</p>}
             </div>
 
             <pre className="whitespace-pre-wrap">{line}</pre>
@@ -153,6 +176,8 @@ export default function ThermalReceipt({
                 <p className="text-xs">Terima kasih</p>
                 <p className="text-xs">Barang yang sudah dibeli</p>
                 <p className="text-xs">tidak dapat ditukar/dikembalikan</p>
+                <p className="text-xs mt-1">#{transaction?.invoice}</p>
+                <SimpleBarcode value={transaction?.invoice} />
             </div>
 
             {/* Print-specific styles */}
@@ -181,6 +206,8 @@ export function ThermalReceipt58mm({
     transaction,
     storeName = "TOKO",
     storePhone = "",
+    storeEmail = "",
+    storeWebsite = "",
 }) {
     const formatPrice = (price = 0) => {
         return "Rp" + Number(price || 0).toLocaleString("id-ID");
@@ -198,6 +225,25 @@ export function ThermalReceipt58mm({
     const items = transaction?.details ?? [];
     const line = "-".repeat(24);
 
+    const SimpleBarcode = ({ value }) => {
+        const bars = (value || "").split("").map((char, idx) => {
+            const weight = (char.charCodeAt(0) + idx * 17) % 4;
+            return 2 + weight;
+        });
+
+        return (
+            <div className="flex items-end gap-[2px] mt-2 justify-center">
+                {bars.map((w, i) => (
+                    <span
+                        key={i}
+                        style={{ width: `${w}px` }}
+                        className="h-8 bg-black block"
+                    />
+                ))}
+            </div>
+        );
+    };
+
     return (
         <div
             className="thermal-receipt-58 font-mono text-xs"
@@ -206,6 +252,8 @@ export function ThermalReceipt58mm({
             <div className="text-center">
                 <p className="font-bold">{storeName}</p>
                 {storePhone && <p>{storePhone}</p>}
+                {storeEmail && <p className="text-[10px]">{storeEmail}</p>}
+                {storeWebsite && <p className="text-[10px]">{storeWebsite}</p>}
             </div>
 
             <pre>{line}</pre>
@@ -238,6 +286,7 @@ export function ThermalReceipt58mm({
             </div>
             <pre>{line}</pre>
             <p className="text-center">Terima kasih!</p>
+            <SimpleBarcode value={transaction?.invoice} />
 
             <style>{`
                 @media print {
