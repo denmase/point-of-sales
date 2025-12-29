@@ -111,27 +111,25 @@ export default function Index({
         if (!items.length) return null;
 
         return (
-            <div className="rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/30 p-3 space-y-3">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <span className="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center">
-                            <IconAlertTriangle size={18} />
-                        </span>
-                        <div>
-                            <p className="text-sm font-semibold text-rose-700 dark:text-rose-300">
-                                Notifikasi Stok
-                            </p>
-                            <p className="text-xs text-rose-600 dark:text-rose-400">
-                                {items.length} produk habis
-                            </p>
-                        </div>
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 space-y-3">
+                <div className="flex items-center gap-2">
+                    <span className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center">
+                        <IconAlertTriangle size={18} />
+                    </span>
+                    <div>
+                        <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+                            Notifikasi Stok
+                        </p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                            {items.length} produk habis
+                        </p>
                     </div>
                 </div>
                 <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
                     {items.map((item) => (
                         <div
                             key={item.id}
-                            className="flex items-start justify-between gap-2 rounded-lg bg-white dark:bg-slate-900 p-2.5 border border-rose-100 dark:border-rose-900/40"
+                            className="flex items-start justify-between gap-2 rounded-lg bg-slate-50 dark:bg-slate-800/60 p-2.5 border border-slate-200 dark:border-slate-700"
                         >
                             <div className="flex-1 min-w-0">
                                 <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 truncate">
