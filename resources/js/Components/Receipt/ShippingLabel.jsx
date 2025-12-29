@@ -86,15 +86,6 @@ export default function ShippingLabel({ transaction, store = {} }) {
                 `}
             </style>
 
-            {/* Print Button */}
-            <button
-                onClick={handlePrint}
-                className="no-print mb-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-500 hover:bg-primary-600 text-white font-medium transition-colors"
-            >
-                <IconTruck size={18} />
-                Cetak Resi
-            </button>
-
             {/* Shipping Label */}
             <div
                 className="shipping-label bg-white border-2 border-slate-300 p-5"
