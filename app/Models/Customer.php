@@ -26,6 +26,5 @@ class Customer extends Model
         'district_name',
         'village_id',
         'village_name',
-        'postal_code',
     ];
 }

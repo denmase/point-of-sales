@@ -64,7 +64,6 @@ class CustomerController extends Controller
             'regency_id'  => 'required|string',
             'district_id' => 'required|string',
             'village_id'  => 'required|string',
-            'postal_code' => 'nullable|string|max:10',
         ]);
 
         $province = Province::where('code', $request->province_id)->first();
@@ -85,7 +84,6 @@ class CustomerController extends Controller
             'district_name' => $district?->name,
             'village_id' => $request->village_id,
             'village_name' => $village?->name,
-            'postal_code' => $request->postal_code ?? $village?->postal_code,
         ]);
 
         //redirect
@@ -108,7 +106,6 @@ class CustomerController extends Controller
             'regency_id'  => 'nullable|string',
             'district_id' => 'nullable|string',
             'village_id'  => 'nullable|string',
-            'postal_code' => 'nullable|string|max:10',
         ]);
 
         try {
@@ -129,7 +126,6 @@ class CustomerController extends Controller
                 'district_name'  => $district?->name,
                 'village_id'     => $validated['village_id'] ?? null,
                 'village_name'   => $village?->name,
-                'postal_code'    => $validated['postal_code'] ?? $village?->postal_code,
             ]);
 
             return response()->json([
@@ -167,7 +163,7 @@ class CustomerController extends Controller
             ? District::where('city_code', $customer->regency_id)->select('code', 'name')->orderBy('name')->get()
             : [];
         $villages = $customer->district_id
-            ? Village::where('district_code', $customer->district_id)->select('code', 'name', 'postal_code')->orderBy('name')->get()
+            ? Village::where('district_code', $customer->district_id)->select('code', 'name')->orderBy('name')->get()
             : [];
 
         return Inertia::render('Dashboard/Customers/Edit', [
@@ -199,7 +195,6 @@ class CustomerController extends Controller
             'regency_id'  => 'required|string',
             'district_id' => 'required|string',
             'village_id'  => 'required|string',
-            'postal_code' => 'nullable|string|max:10',
         ]);
 
         $province = Province::where('code', $request->province_id)->first();
@@ -220,7 +215,6 @@ class CustomerController extends Controller
             'district_name' => $district?->name,
             'village_id' => $request->village_id,
             'village_name' => $village?->name,
-            'postal_code' => $request->postal_code ?? $village?->postal_code,
         ]);
 
         //redirect

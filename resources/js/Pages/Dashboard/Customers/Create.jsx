@@ -22,7 +22,6 @@ export default function Create() {
         regency_id: "",
         district_id: "",
         village_id: "",
-        postal_code: "",
     });
 
     const [regencies, setRegencies] = useState([]);
@@ -67,7 +66,6 @@ export default function Create() {
         setData("regency_id", "");
         setData("district_id", "");
         setData("village_id", "");
-        setData("postal_code", "");
         setDistricts([]);
         setVillages([]);
         fetchRegencies(data.province_id);
@@ -76,14 +74,12 @@ export default function Create() {
     useEffect(() => {
         setData("district_id", "");
         setData("village_id", "");
-        setData("postal_code", "");
         setVillages([]);
         fetchDistricts(data.regency_id);
     }, [data.regency_id]);
 
     useEffect(() => {
         setData("village_id", "");
-        setData("postal_code", "");
         fetchVillages(data.district_id);
     }, [data.district_id]);
 
@@ -218,7 +214,6 @@ export default function Create() {
                                     onChange={(e) => {
                                         const val = e.target.value;
                                         setData("village_id", val);
-                                        setData("postal_code", "");
                                     }}
                                     className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 text-sm"
                                     disabled={!data.district_id}
@@ -240,15 +235,6 @@ export default function Create() {
                                 )}
                             </div>
                         </div>
-
-                        <Input
-                            type="text"
-                            label="Kode Pos"
-                            placeholder="Kode pos"
-                            value={data.postal_code}
-                            onChange={(e) => setData("postal_code", e.target.value)}
-                            errors={errors.postal_code}
-                        />
 
                         <Textarea
                             label="Alamat Detail"

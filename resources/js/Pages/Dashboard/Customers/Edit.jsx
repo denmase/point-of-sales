@@ -19,7 +19,6 @@ export default function Edit({ customer }) {
         regency_id: customer.regency_id || "",
         district_id: customer.district_id || "",
         village_id: customer.village_id || "",
-        postal_code: customer.postal_code || "",
         _method: "PUT",
     });
 
@@ -56,7 +55,6 @@ export default function Edit({ customer }) {
         setData("regency_id", "");
         setData("district_id", "");
         setData("village_id", "");
-        setData("postal_code", "");
         setDistrictList([]);
         setVillageList([]);
         fetchRegencies(data.province_id);
@@ -66,7 +64,6 @@ export default function Edit({ customer }) {
         // when regency changes, clear downstream
         setData("district_id", "");
         setData("village_id", "");
-        setData("postal_code", "");
         setVillageList([]);
         fetchDistricts(data.regency_id);
     }, [data.regency_id]);
@@ -74,7 +71,6 @@ export default function Edit({ customer }) {
     useEffect(() => {
         // when district changes, clear village
         setData("village_id", "");
-        setData("postal_code", "");
         fetchVillages(data.district_id);
     }, [data.district_id]);
 
@@ -214,7 +210,6 @@ export default function Edit({ customer }) {
                                     onChange={(e) => {
                                         const val = e.target.value;
                                         setData("village_id", val);
-                                        setData("postal_code", "");
                                     }}
                                     className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 text-sm"
                                     disabled={!data.district_id}
@@ -233,16 +228,6 @@ export default function Edit({ customer }) {
                                 )}
                             </div>
                         </div>
-
-                        <Input
-                            type="text"
-                            label="Kode Pos"
-                            placeholder="Kode pos"
-                            value={data.postal_code}
-                            onChange={(e) => setData("postal_code", e.target.value)}
-                            errors={errors.postal_code}
-                        />
-
                         <Textarea
                             label="Alamat Detail"
                             placeholder="Alamat lengkap"
