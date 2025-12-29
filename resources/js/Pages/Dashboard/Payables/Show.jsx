@@ -19,6 +19,7 @@ const formatCurrency = (value = 0) =>
 export default function PayableShow({ payable, bankAccounts = [] }) {
     const { flash, storeProfile } = usePage().props;
     const [showForm, setShowForm] = useState(false);
+    const [showPreview, setShowPreview] = useState(false);
     const printRef = useRef(null);
     const { data, setData, post, processing, reset, errors } = useForm({
         amount: "",
