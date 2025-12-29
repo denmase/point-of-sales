@@ -15,7 +15,7 @@ import {
 import Notification from "@/Components/Dashboard/Notification";
 
 export default function POSLayout({ children }) {
-    const { auth } = usePage().props;
+    const { auth, storeProfile } = usePage().props;
     const { darkMode, themeSwitcher } = useTheme();
     const [currentTime, setCurrentTime] = useState(new Date());
     const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -69,17 +69,22 @@ export default function POSLayout({ children }) {
                     </button>
 
                     {/* Logo */}
-                    <Link
-                        href={route("dashboard")}
-                        className="flex items-center gap-2"
-                    >
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
-                            <span className="text-white font-bold text-sm">
-                                K
-                            </span>
+                    <Link href={route("dashboard")} className="flex items-center gap-2">
+                        <div className="w-9 h-9 flex items-center justify-center overflow-hidden">
+                            {storeProfile?.logo ? (
+                                <img
+                                    src={storeProfile.logo}
+                                    alt={storeProfile?.name || "Store"}
+                                    className="w-full h-full object-contain"
+                                />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-primary-600 text-white font-bold text-sm">
+                                    {(storeProfile?.name || "K").charAt(0)}
+                                </div>
+                            )}
                         </div>
                         <span className="hidden sm:block text-lg font-bold text-slate-800 dark:text-white">
-                            KASIR
+                            {storeProfile?.name || "KASIR"}
                         </span>
                     </Link>
 
