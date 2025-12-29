@@ -107,14 +107,17 @@ export default function Print({ transaction }) {
                 return 2 + weight; // 2-6px width
             });
         }, [value]);
+        const totalWidth = bars.reduce((acc, w) => acc + w, 0);
+        const targetWidth = 180; // px target
+        const scale = totalWidth ? Math.min(2.2, targetWidth / totalWidth) : 1;
 
         return (
-            <div className="flex items-end gap-[2px] mt-3">
+            <div className="flex items-end gap-[2px] mt-4">
                 {bars.map((w, i) => (
                     <span
                         key={i}
-                        style={{ width: `${w}px` }}
-                        className="h-12 bg-slate-800 dark:bg-slate-100 block"
+                        style={{ width: `${w * scale}px` }}
+                        className="h-10 sm:h-14 bg-slate-800 dark:bg-slate-100 block"
                     />
                 ))}
             </div>
