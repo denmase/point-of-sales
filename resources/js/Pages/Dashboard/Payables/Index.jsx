@@ -226,10 +226,10 @@ export default function PayablesIndex({ payables, filters = {}, suppliers = [] }
                     <div className="grid grid-cols-12 px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider border-b border-slate-100 dark:border-slate-800">
                         <div className="col-span-2">Dokumen</div>
                         <div className="col-span-3">Supplier</div>
-                        <div className="col-span-2 text-right">Total</div>
-                        <div className="col-span-2 text-right">Sisa</div>
-                        <div className="col-span-2 text-right">Jatuh Tempo</div>
-                        <div className="col-span-1 text-center">Status</div>
+                        <div className="col-span-2 ">Total</div>
+                        <div className="col-span-2 ">Sisa</div>
+                        <div className="col-span-2 ">Jatuh Tempo</div>
+                        <div className="col-span-1">Status</div>
                     </div>
                     {rows.length ? (
                         rows.map((item) => (
@@ -248,16 +248,16 @@ export default function PayablesIndex({ payables, filters = {}, suppliers = [] }
                                         {item.supplier?.name || "-"}
                                     </p>
                                 </div>
-                                <div className="col-span-2 text-right text-sm font-semibold text-slate-900 dark:text-white">
+                                <div className="col-span-2  text-sm font-semibold text-slate-900 dark:text-white">
                                     {formatCurrency(item.total)}
                                 </div>
-                                <div className="col-span-2 text-right text-sm font-semibold text-primary-600 dark:text-primary-400">
+                                <div className="col-span-2  text-sm font-semibold text-primary-600 dark:text-primary-400">
                                     {formatCurrency(item.remaining)}
                                 </div>
-                                <div className="col-span-2 text-right text-sm text-slate-600 dark:text-slate-400">
+                                <div className="col-span-2  text-sm text-slate-600 dark:text-slate-400">
                                     {item.due_date || "-"}
                                 </div>
-                                <div className="col-span-1 flex justify-center">
+                                <div className="col-span-1 flex ">
                                     {statusBadge(item.status)}
                                 </div>
                             </Link>
