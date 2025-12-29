@@ -10,6 +10,14 @@ use Picqer\Barcode\BarcodeGeneratorPNG;
 
 class DocumentController extends Controller
 {
+    private function ensureFontDirectory(): void
+    {
+        $fontDir = storage_path('fonts');
+        if (! is_dir($fontDir)) {
+            @mkdir($fontDir, 0755, true);
+        }
+    }
+
     private function storeProfile(): array
     {
         $logo = \App\Models\Setting::get('store_logo');
@@ -51,6 +59,8 @@ class DocumentController extends Controller
 
     public function invoice(string $invoice)
     {
+        $this->ensureFontDirectory();
+
         $transaction = Transaction::with(['details.product', 'cashier', 'customer'])
             ->where('invoice', $invoice)
             ->firstOrFail();
@@ -66,6 +76,8 @@ class DocumentController extends Controller
 
     public function receipt(string $invoice, string $size = '80')
     {
+        $this->ensureFontDirectory();
+
         $transaction = Transaction::with(['details.product', 'cashier', 'customer'])
             ->where('invoice', $invoice)
             ->firstOrFail();
@@ -83,6 +95,8 @@ class DocumentController extends Controller
 
     public function shipping(string $invoice)
     {
+        $this->ensureFontDirectory();
+
         $transaction = Transaction::with(['details.product', 'customer', 'cashier'])
             ->where('invoice', $invoice)
             ->firstOrFail();
@@ -102,6 +116,8 @@ class DocumentController extends Controller
 
     public function receivable(Receivable $receivable)
     {
+        $this->ensureFontDirectory();
+
         $receivable->load(['customer', 'payments.bankAccount', 'payments.user']);
 
         $pdf = Pdf::loadView('pdf.receivable', [
@@ -115,6 +131,8 @@ class DocumentController extends Controller
 
     public function payable(Payable $payable)
     {
+        $this->ensureFontDirectory();
+
         $payable->load(['supplier', 'payments.bankAccount', 'payments.user']);
 
         $pdf = Pdf::loadView('pdf.payable', [

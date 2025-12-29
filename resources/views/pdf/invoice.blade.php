@@ -7,7 +7,33 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 400;
+            src: url("{{ public_path('inter/Inter_24pt-Regular.ttf') }}") format('truetype');
+        }
+
+        @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 500;
+            src: url("{{ public_path('inter/Inter_24pt-Medium.ttf') }}") format('truetype');
+        }
+
+        @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 600;
+            src: url("{{ public_path('inter/Inter_24pt-SemiBold.ttf') }}") format('truetype');
+        }
+
+        @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 700;
+            src: url("{{ public_path('inter/Inter_24pt-Bold.ttf') }}") format('truetype');
+        }
 
         * {
             box-sizing: border-box;
