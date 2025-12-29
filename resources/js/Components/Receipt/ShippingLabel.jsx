@@ -83,18 +83,28 @@ export default function ShippingLabel({ transaction, store = {} }) {
                             display: none !important;
                         }
                     }
+                    @media screen and (max-width: 768px) {
+                        .shipping-label {
+                            transform: scale(0.94);
+                            transform-origin: top left;
+                        }
+                    }
                 `}
             </style>
 
             {/* Shipping Label */}
             <div
-                className="shipping-label bg-white border-2 border-slate-300 p-5"
-                style={{ width: "160mm", height: "110mm" }}
+                className="shipping-label bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-sm"
+                style={{
+                    width: "100%",
+                    maxWidth: "160mm",
+                    minHeight: "100mm",
+                }}
             >
                 {/* Header with store profile */}
-                <div className="flex items-start justify-between border-b border-slate-200 pb-3 mb-3">
-                    <div className="flex items-start gap-3">
-                        <div className="w-14 h-14 border border-slate-200 bg-white flex items-center justify-center p-1">
+                <div className="flex flex-col sm:flex-row flex-wrap items-center sm:items-start justify-between gap-3 border-b border-slate-200 pb-3 mb-3 text-center sm:text-left">
+                    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3 min-w-0">
+                        <div className="w-12 h-12 sm:w-14 sm:h-14 bg-white flex items-center justify-center p-1 flex-shrink-0">
                             {storeLogo ? (
                                 <img
                                     src={storeLogo}
@@ -107,16 +117,16 @@ export default function ShippingLabel({ transaction, store = {} }) {
                                 </span>
                             )}
                         </div>
-                        <div className="space-y-1">
-                            <p className="text-lg font-bold text-slate-800">
+                        <div className="space-y-1 min-w-0">
+                            <p className="text-base sm:text-lg font-bold text-slate-800">
                                 {storeName}
                             </p>
                             {store.address && (
-                                <p className="text-xs text-slate-600 leading-snug">
+                                <p className="text-[11px] sm:text-xs text-slate-600 leading-snug break-words">
                                     {store.address}
                                 </p>
                             )}
-                            <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-slate-600">
+                            <div className="flex flex-wrap justify-center sm:justify-start gap-x-2 gap-y-1 text-[11px] text-slate-600">
                                 {store.phone && (
                                     <span className="flex items-center gap-1">
                                         <IconPhone size={12} />
@@ -128,19 +138,19 @@ export default function ShippingLabel({ transaction, store = {} }) {
                             </div>
                         </div>
                     </div>
-                    <div className="text-right">
-                        <p className="text-xs text-slate-500">Invoice</p>
-                        <p className="text-base font-bold text-slate-800">
+                    <div className="text-center sm:text-right min-w-[140px]">
+                        <p className="text-[11px] text-slate-500">Invoice</p>
+                        <p className="text-sm sm:text-base font-bold text-slate-800">
                             {transaction?.invoice || "-"}
                         </p>
-                        <p className="text-xs text-slate-500 mt-1">
+                        <p className="text-[11px] text-slate-500 mt-1">
                             {formatDate(transaction?.created_at)}
                         </p>
                     </div>
                 </div>
 
                 {/* Main Content */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     {/* Penerima */}
                     <div className="border border-slate-200 rounded-lg p-3">
                         <div className="flex items-center gap-2 mb-2">
@@ -151,7 +161,7 @@ export default function ShippingLabel({ transaction, store = {} }) {
                         </div>
                         {hasCustomer ? (
                             <>
-                                <p className="text-lg font-bold text-slate-800">
+                                <p className="text-base sm:text-lg font-bold text-slate-800">
                                     {customer.name}
                                 </p>
                                 {customer.phone && (
@@ -215,7 +225,7 @@ export default function ShippingLabel({ transaction, store = {} }) {
                     <p className="text-xs font-semibold text-slate-600 mb-1">
                         Produk:
                     </p>
-                    <div className="text-xs text-slate-600 line-clamp-2">
+                    <div className="text-xs text-slate-600 line-clamp-3">
                         {transaction?.details
                             ?.map(
                                 (item) =>
@@ -229,7 +239,7 @@ export default function ShippingLabel({ transaction, store = {} }) {
 
                 {/* Footer */}
                 <div className="mt-3 pt-3 border-t border-dashed border-slate-300">
-                    <div className="flex justify-between items-center">
+                    <div className="flex flex-wrap justify-between items-center gap-2">
                         <p className="text-xs text-slate-400">
                             Kasir: {transaction?.cashier?.name || "-"}
                         </p>

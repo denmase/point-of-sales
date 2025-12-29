@@ -294,11 +294,15 @@ export default function Print({ transaction }) {
                     {/* Shipping Label Preview */}
                     {printMode === "shipping" && (
                         <div className="flex justify-center print:block">
-                            <div className="bg-white rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xl p-6 print:shadow-none print:border-0 print:p-0 print:rounded-none">
-                                <ShippingLabel
-                                    transaction={transaction}
-                                    store={store}
-                                />
+                            <div className="bg-white rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xl p-3 sm:p-5 print:shadow-none print:border-0 print:p-0 print:rounded-none w-full">
+                                <div className="w-full overflow-x-auto sm:overflow-visible">
+                                    <div className="inline-block origin-top print:scale-100">
+                                        <ShippingLabel
+                                            transaction={transaction}
+                                            store={store}
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     )}
@@ -307,10 +311,10 @@ export default function Print({ transaction }) {
                     {printMode === "invoice" && (
                         <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xl print:shadow-none print:border-slate-300">
                             {/* Header */}
-                            <div className="bg-gradient-to-r from-primary-500 to-primary-700 px-6 py-6 text-white print:bg-slate-100 print:text-slate-900">
-                                <div className="flex flex-wrap items-start justify-between gap-6">
-                                    <div className="flex items-start gap-3">
-                                        <div className="w-14 h-14 flex items-center justify-center p-1">
+                            <div className="bg-gradient-to-r from-primary-500 to-primary-700 px-4 sm:px-6 py-5 sm:py-6 text-white print:bg-slate-100 print:text-slate-900">
+                                <div className="flex flex-col items-center text-center gap-4 sm:gap-5 sm:grid sm:grid-cols-[1.4fr,1fr] sm:text-left sm:items-start">
+                                    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3 min-w-0">
+                                        <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center p-1 flex-shrink-0">
                                             {store.logo ? (
                                                 <img
                                                     src={store.logo}
@@ -323,19 +327,19 @@ export default function Print({ transaction }) {
                                                 </span>
                                             )}
                                         </div>
-                                        <div className="text-white print:text-slate-800 space-y-1">
-                                            <p className="text-lg font-bold">
+                                        <div className="text-white print:text-slate-800 space-y-1 min-w-0 text-center sm:text-left">
+                                            <p className="text-base sm:text-lg font-bold leading-tight">
                                                 {store.name}
                                             </p>
                                             {store.address && (
-                                                <p className="text-xs opacity-90">
+                                                <p className="text-[11px] sm:text-xs opacity-90 leading-snug break-words">
                                                     {store.address}
                                                 </p>
                                             )}
                                             {(store.phone ||
                                                 store.email ||
                                                 store.website) && (
-                                                <p className="text-xs opacity-90 space-x-2">
+                                                <p className="text-[11px] sm:text-xs opacity-90 space-x-2 leading-snug flex flex-wrap justify-center sm:justify-start gap-x-2 gap-y-1">
                                                     {store.phone && (
                                                         <span>
                                                             Telp: {store.phone}
@@ -354,28 +358,30 @@ export default function Print({ transaction }) {
                                         </div>
                                     </div>
 
-                                    <div className="text-right">
-                                        <div className="flex items-center gap-2 mb-2 justify-end">
-                                            <IconReceipt size={24} />
-                                            <span className="text-sm font-medium opacity-90 print:opacity-100">
-                                                INVOICE
-                                            </span>
+                                    <div className="text-center sm:text-right">
+                                        <div className="inline-flex flex-col items-center sm:items-end bg-white/5 print:bg-transparent rounded-xl px-3 py-2 sm:px-4 sm:py-3 min-w-[180px] sm:min-w-[200px]">
+                                            <div className="flex items-center gap-2 mb-1 justify-center sm:justify-end">
+                                                <IconReceipt size={20} className="sm:w-6 sm:h-6" />
+                                                <span className="text-xs sm:text-sm font-medium opacity-90 print:opacity-100">
+                                                    INVOICE
+                                                </span>
+                                            </div>
+                                            <p className="text-lg sm:text-2xl font-bold leading-tight">
+                                                {transaction.invoice}
+                                            </p>
+                                            <p className="text-xs sm:text-sm opacity-80 print:opacity-100 mt-1">
+                                                {formatDateTime(
+                                                    transaction.created_at
+                                                )}
+                                            </p>
                                         </div>
-                                        <p className="text-2xl font-bold">
-                                            {transaction.invoice}
-                                        </p>
-                                        <p className="text-sm opacity-80 print:opacity-100 mt-1">
-                                            {formatDateTime(
-                                                transaction.created_at
-                                            )}
-                                        </p>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Info Grid */}
-                            <div className="grid md:grid-cols-2 gap-6 px-6 py-6 border-b border-slate-100 dark:border-slate-800">
-                                <div>
+                            <div className="grid md:grid-cols-2 gap-4 sm:gap-6 px-4 sm:px-6 py-4 sm:py-6 border-b border-slate-100 dark:border-slate-800">
+                                <div className="bg-slate-50/60 dark:bg-slate-800/40 rounded-xl p-3 sm:p-4">
                                     <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">
                                         Pelanggan
                                     </p>
@@ -393,7 +399,7 @@ export default function Print({ transaction }) {
                                         </p>
                                     )}
                                 </div>
-                                <div>
+                                <div className="bg-slate-50/60 dark:bg-slate-800/40 rounded-xl p-3 sm:p-4">
                                     <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">
                                         Kasir
                                     </p>
@@ -451,66 +457,72 @@ export default function Print({ transaction }) {
                                 )}
 
                             {/* Items Table */}
-                            <div className="px-6 py-6">
-                                <table className="w-full text-sm">
-                                    <thead>
-                                        <tr className="border-b border-slate-100 dark:border-slate-800">
-                                            <th className="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                                                Produk
-                                            </th>
-                                            <th className="pb-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                                                Harga
-                                            </th>
-                                            <th className="pb-3 text-center text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                                                Qty
-                                            </th>
-                                            <th className="pb-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                                                Subtotal
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                                        {items.map((item, index) => {
-                                            const quantity =
-                                                Number(item.qty) || 1;
-                                            const subtotal =
-                                                Number(item.price) || 0;
-                                            const unitPrice =
-                                                subtotal / quantity;
+                            <div className="px-4 sm:px-6 py-6">
+                                <div className="w-full overflow-x-auto">
+                                    <table className="w-full min-w-[620px] text-sm">
+                                        <thead>
+                                            <tr className="border-b border-slate-100 dark:border-slate-800">
+                                                <th className="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                                                    Produk
+                                                </th>
+                                                <th className="pb-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                                                    Harga
+                                                </th>
+                                                <th className="pb-3 text-center text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                                                    Qty
+                                                </th>
+                                                <th className="pb-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                                                    Subtotal
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                                            {items.map((item, index) => {
+                                                const quantity =
+                                                    Number(item.qty) || 1;
+                                                const subtotal =
+                                                    Number(item.price) || 0;
+                                                const unitPrice =
+                                                    subtotal / quantity;
 
-                                            return (
-                                                <tr key={item.id ?? index}>
-                                                    <td className="py-3">
-                                                        <p className="font-medium text-slate-900 dark:text-white">
-                                                            {
-                                                                item.product
-                                                                    ?.title
-                                                            }
-                                                        </p>
-                                                        {item.product
-                                                            ?.barcode && (
-                                                            <p className="text-xs text-slate-500 dark:text-slate-400">
+                                                return (
+                                                    <tr key={item.id ?? index}>
+                                                        <td className="py-3">
+                                                            <p className="font-medium text-slate-900 dark:text-white">
                                                                 {
                                                                     item.product
-                                                                        .barcode
+                                                                        ?.title
                                                                 }
                                                             </p>
-                                                        )}
-                                                    </td>
-                                                    <td className="py-3 text-right text-slate-600 dark:text-slate-400">
-                                                        {formatPrice(unitPrice)}
-                                                    </td>
-                                                    <td className="py-3 text-center text-slate-600 dark:text-slate-400">
-                                                        {quantity}
-                                                    </td>
-                                                    <td className="py-3 text-right font-semibold text-slate-900 dark:text-white">
-                                                        {formatPrice(subtotal)}
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })}
-                                    </tbody>
-                                </table>
+                                                            {item.product
+                                                                ?.barcode && (
+                                                                <p className="text-xs text-slate-500 dark:text-slate-400">
+                                                                    {
+                                                                        item.product
+                                                                            .barcode
+                                                                    }
+                                                                </p>
+                                                            )}
+                                                        </td>
+                                                        <td className="py-3 text-right text-slate-600 dark:text-slate-400">
+                                                            {formatPrice(
+                                                                unitPrice
+                                                            )}
+                                                        </td>
+                                                        <td className="py-3 text-center text-slate-600 dark:text-slate-400">
+                                                            {quantity}
+                                                        </td>
+                                                        <td className="py-3 text-right font-semibold text-slate-900 dark:text-white">
+                                                            {formatPrice(
+                                                                subtotal
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
 
                             {/* Summary */}
