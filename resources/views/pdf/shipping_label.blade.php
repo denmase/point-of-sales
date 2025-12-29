@@ -173,9 +173,9 @@
                         @endif{{ $store['email'] }}
                     </div>
                 </td>
-                <td width="92pt" style="text-align: right; vertical-align: top;">
+                <td width="94pt" style="text-align: right; vertical-align: top;">
                     <div class="text-muted" style="font-size: 7pt;">INVOICE </div>
-                    <div class="text-bold" style="font-size: 10pt; color: #000; line-height: 1.1;">
+                    <div class="text-bold" style="font-size: 12pt; color: #000; line-height: 1.1;">
                         {{ $transaction->invoice }}</div>
                     <div class="text-small">{{ $formatDate($transaction->created_at) }}</div>
                 </td>
@@ -186,7 +186,7 @@
 
         <table>
             <tr>
-                <td style="padding-right: 5pt; width: 75%;">
+                <td style="padding-right: 5pt; width: 65%;">
                     <div class="section-box">
                         <div class="title-label">Penerima</div>
                         <div class="text-bold">{{ $transaction->customer->name ?? 'Umum' }}</div>
@@ -208,7 +208,7 @@
                         </div>
                     </div>
                 </td>
-                <td style="padding-left: 5pt; width: 25%;">
+                <td style="padding-left: 5pt; width: 35%;">
                     <div class="section-box">
                         <div class="title-label">Ringkasan Pesanan</div>
                         <table class="text-small">

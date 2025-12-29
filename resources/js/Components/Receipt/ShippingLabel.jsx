@@ -115,7 +115,7 @@ export default function ShippingLabel({ transaction, store = {} }) {
 
                         <div className="text-right border-l pl-4 border-slate-200">
                             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">No. Invoice</span>
-                            <p className="text-lg font-black text-primary-600 tabular-nums">{transaction?.invoice}</p>
+                            <p className="text-xl font-black text-primary-600 tabular-nums">{transaction?.invoice}</p>
                             <p className="text-xs text-slate-500 font-medium">{formatDate(transaction?.created_at)}</p>
                         </div>
                     </div>
