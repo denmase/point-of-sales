@@ -186,7 +186,7 @@
 
         <table>
             <tr>
-                <td style="padding-right: 5pt;">
+                <td style="padding-right: 5pt; width: 75%;">
                     <div class="section-box">
                         <div class="title-label">Penerima</div>
                         <div class="text-bold">{{ $transaction->customer->name ?? 'Umum' }}</div>
@@ -195,7 +195,7 @@
                             {{ Str::limit($transaction->customer->address ?? 'No Address', 80) }}</div>
                     </div>
                 </td>
-                <td style="padding-left: 5pt;">
+                <td style="padding-left: 5pt; width: 25%;">
                     <div class="section-box">
                         <div class="title-label">Ringkasan Pesanan</div>
                         <table class="text-small">
@@ -227,7 +227,7 @@
             <table style="table-layout: auto;">
                 <tr>
                     <td class="text-muted" style="vertical-align: bottom; padding-bottom: 2pt;">
-                        Kasir: <strong>{{ $transaction->cashier->name ?? '-' }}</strong><br>
+                        Admin: <strong>{{ $transaction->cashier->name ?? '-' }}</strong><br>
                         Dicetak: {{ now()->format('d/m/Y H:i') }}
                     </td>
 
