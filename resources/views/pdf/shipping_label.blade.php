@@ -190,7 +190,8 @@
                     <div class="section-box">
                         <div class="title-label">Penerima</div>
                         <div class="text-bold">{{ $transaction->customer->name ?? 'Umum' }}</div>
-                        <div class="text-small">{{ $transaction->customer->phone ?? '-' }}</div>
+                        <div class="text-small text-muted" style="margin-top: 5px; margin-bottom: 5px;">
+                            {{ $transaction->customer->no_telp ?? '-' }}</div>
                         <div class="text-small text-muted">
                             {{ Str::limit($transaction->customer->address ?? 'No Address', 80) }}</div>
                         <div class="text-small text-muted" style="margin-top:2pt;">

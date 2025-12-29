@@ -169,8 +169,8 @@
             <td style="width:50%; vertical-align:top; font-size:13px;">
                 <div style="color:#64748b;font-weight:600;">Pelanggan</div>
                 <div style="font-weight:700; margin-top:2px;">{{ $transaction->customer->name ?? 'Umum' }}</div>
-                @if ($transaction->customer?->phone)
-                    <div style="color:#475569; margin-top:2px;">{{ $transaction->customer->phone }}</div>
+                @if ($transaction->customer?->no_telp)
+                    <div style="color:#475569; margin-top:2px;">{{ $transaction->customer->no_telp }}</div>
                 @endif
                 @if ($transaction->customer?->address)
                     <div style="color:#475569; margin-top:2px;">{{ $transaction->customer->address }}</div>
