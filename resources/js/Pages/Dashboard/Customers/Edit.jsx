@@ -50,28 +50,66 @@ export default function Edit({ customer }) {
         setVillageList(res.data);
     };
 
+    // Track previous selection to avoid clearing on initial mount
+    const prevProvince = React.useRef(null);
+    const prevRegency = React.useRef(null);
+    const prevDistrict = React.useRef(null);
+
     useEffect(() => {
-        // when province changes, clear downstream
-        setData("regency_id", "");
-        setData("district_id", "");
-        setData("village_id", "");
-        setDistrictList([]);
-        setVillageList([]);
-        fetchRegencies(data.province_id);
+        if (data.province_id) {
+            if (
+                prevProvince.current &&
+                prevProvince.current !== data.province_id
+            ) {
+                setData("regency_id", "");
+                setData("district_id", "");
+                setData("village_id", "");
+                setDistrictList([]);
+                setVillageList([]);
+            }
+            fetchRegencies(data.province_id);
+        } else {
+            setRegencyList([]);
+            setDistrictList([]);
+            setVillageList([]);
+            setData("regency_id", "");
+            setData("district_id", "");
+            setData("village_id", "");
+        }
+        prevProvince.current = data.province_id;
     }, [data.province_id]);
 
     useEffect(() => {
-        // when regency changes, clear downstream
-        setData("district_id", "");
-        setData("village_id", "");
-        setVillageList([]);
-        fetchDistricts(data.regency_id);
+        if (data.regency_id) {
+            if (prevRegency.current && prevRegency.current !== data.regency_id) {
+                setData("district_id", "");
+                setData("village_id", "");
+                setVillageList([]);
+            }
+            fetchDistricts(data.regency_id);
+        } else {
+            setDistrictList([]);
+            setVillageList([]);
+            setData("district_id", "");
+            setData("village_id", "");
+        }
+        prevRegency.current = data.regency_id;
     }, [data.regency_id]);
 
     useEffect(() => {
-        // when district changes, clear village
-        setData("village_id", "");
-        fetchVillages(data.district_id);
+        if (data.district_id) {
+            if (
+                prevDistrict.current &&
+                prevDistrict.current !== data.district_id
+            ) {
+                setData("village_id", "");
+            }
+            fetchVillages(data.district_id);
+        } else {
+            setVillageList([]);
+            setData("village_id", "");
+        }
+        prevDistrict.current = data.district_id;
     }, [data.district_id]);
 
     const submit = (e) => {
