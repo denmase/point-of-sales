@@ -202,6 +202,7 @@ export default function Dashboard({
     recentTransactions = [],
     topCustomers = [],
     topLocations = [],
+    lowStockProducts = [],
 }) {
     const chartRef = useRef(null);
     const chartInstance = useRef(null);
@@ -556,6 +557,37 @@ export default function Dashboard({
                                     <p className="text-sm font-bold text-primary-600 dark:text-primary-400">
                                         {formatCurrency(trx.total)}
                                     </p>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </ListCard>
+
+                {/* Low Stock Highlight */}
+                <ListCard
+                    title="Stok Menipis"
+                    subtitle="Stok < 10"
+                    icon={IconAlertTriangle}
+                    emptyMessage="Semua stok aman"
+                >
+                    {lowStockProducts.length > 0 && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                            {lowStockProducts.map((product, index) => (
+                                <div
+                                    key={index}
+                                    className="flex items-center justify-between p-3 rounded-xl bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-800"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <span className="w-7 h-7 rounded-full bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300 text-sm font-semibold flex items-center justify-center">
+                                            {index + 1}
+                                        </span>
+                                        <span className="text-sm font-semibold text-rose-800 dark:text-rose-200 truncate max-w-[140px]">
+                                            {product.name}
+                                        </span>
+                                    </div>
+                                    <span className="text-xs font-semibold text-rose-700 dark:text-rose-200">
+                                        {product.stock} pcs
+                                    </span>
                                 </div>
                             ))}
                         </div>
