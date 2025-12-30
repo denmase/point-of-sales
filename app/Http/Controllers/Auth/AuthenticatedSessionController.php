@@ -34,9 +34,22 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         $user = $request->user();
-        $defaultRoute = $user && $user->can('dashboard-access')
-            ? 'dashboard'
-            : 'transactions.index';
+        $routePriority = [
+            'dashboard-access'    => 'dashboard',
+            'transactions-access' => 'transactions.index',
+            'receivables-access'  => 'receivables.index',
+            'payables-access'     => 'payables.index',
+            'customers-access'    => 'customers.index',
+            'suppliers-access'    => 'suppliers.index',
+        ];
+
+        $defaultRoute = 'transactions.index';
+        foreach ($routePriority as $permission => $routeName) {
+            if ($user && $user->can($permission)) {
+                $defaultRoute = $routeName;
+                break;
+            }
+        }
 
         return redirect()->intended(route($defaultRoute, absolute: false));
     }
