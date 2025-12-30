@@ -74,6 +74,14 @@ class DocumentController extends Controller
         return $pdf->stream("invoice-{$transaction->invoice}.pdf");
     }
 
+    /**
+     * Public version of invoice (no auth needed).
+     */
+    public function publicInvoice(string $invoice)
+    {
+        return $this->invoice($invoice);
+    }
+
     public function receipt(string $invoice, string $size = '80')
     {
         $this->ensureFontDirectory();

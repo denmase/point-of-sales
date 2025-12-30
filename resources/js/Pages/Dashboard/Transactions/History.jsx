@@ -323,7 +323,7 @@ const History = ({ transactions, filters }) => {
                                                     <a
                                                         href={`https://wa.me/?text=${encodeURIComponent(
                                                             `Invoice ${transaction.invoice}: ${route(
-                                                                "transactions.print",
+                                                                "transactions.public",
                                                                 transaction.invoice,
                                                                 true
                                                             )}`
@@ -467,7 +467,7 @@ const History = ({ transactions, filters }) => {
                                         </Link>
                                         <a
                                             href={route(
-                                                "pdf.transactions.invoice",
+                                                "transactions.public",
                                                 transaction.invoice
                                             )}
                                             target="_blank"
