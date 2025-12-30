@@ -108,7 +108,7 @@
         /* Container barcode agar ukurannya konsisten */
         .barcode-container {
             text-align: right;
-            width: 150pt;
+            width: 220pt;
             /* Batasi lebar area barcode */
             float: right;
         }
@@ -118,7 +118,7 @@
             /* Sedikit lebih besar agar mudah di-scan */
             width: 100%;
             /* Mengikuti lebar container */
-            max-width: 140pt;
+            max-width: 220pt;
             display: block;
             margin-left: auto;
             /* Aliran ke kanan */
@@ -128,7 +128,7 @@
             font-size: 8pt;
             font-weight: bold;
             letter-spacing: 2pt;
-            margin-top: 2pt;
+            margin-top: 5pt;
             color: #000;
             text-align: center;
             /* Nomor invoice rata tengah terhadap barcode */
@@ -157,25 +157,25 @@
                                 style="max-width: 40pt; max-height: 40pt; object-fit: contain;">
                         @else
                             <div
-                                style="width: 40pt; height: 40pt; border: 1px solid #e2e8f0; line-height: 40pt; text-align: center; font-weight: bold; font-size: 14pt;">
+                                style="width: 40pt; height: 40pt; border: 1px solid #e2e8f0; line-height: 40pt; text-align: center; font-weight: bold; font-size: 17pt;">
                                 {{ substr($store['name'], 0, 2) }}
                             </div>
                         @endif
                     </div>
                 </td>
                 <td style="text-align: left;">
-                    <div class="text-bold" style="font-size: 11pt; line-height: 1.1;">{{ $store['name'] }} </div>
-                    <div class="text-small text-muted" style="margin-top: 2pt;">{{ Str::limit($store['address'], 60) }}
+                    <div class="text-bold" style="font-size: 13pt; line-height: 1.1;">{{ $store['name'] }} </div>
+                    <div class="text-small text-muted" style="margin-top: 3pt;font-size: 7pt;">{{ Str::limit($store['address'], 60) }}
                     </div>
-                    <div class="text-small text-muted">
+                    <div class="text-small text-muted" style="margin-top: 2pt;letter-spacing: 0.7pt;">
                         {{ $store['phone'] }}@if ($store['phone'] && $store['email'])
                             |
                         @endif{{ $store['email'] }}
                     </div>
                 </td>
-                <td width="94pt" style="text-align: right; vertical-align: top;">
+                <td width="180pt" style="text-align: right; vertical-align: top;">
                     <div class="text-muted" style="font-size: 7pt;">INVOICE </div>
-                    <div class="text-bold" style="font-size: 12pt; color: #000; line-height: 1.1;">
+                    <div class="text-bold" style="font-size: 15pt; color: #000; line-height: 1.1;">
                         {{ $transaction->invoice }}</div>
                     <div class="text-small">{{ $formatDate($transaction->created_at) }}</div>
                 </td>
@@ -239,7 +239,7 @@
         <div class="footer-absolute">
             <table style="table-layout: auto;">
                 <tr>
-                    <td class="text-muted" style="vertical-align: bottom; padding-bottom: 2pt;">
+                    <td class="text-muted" style="vertical-align: bottom; padding-bottom: 2pt;line-height: 1.5;">
                         Admin: <strong>{{ $transaction->cashier->name ?? '-' }}</strong><br>
                         Dicetak: {{ now()->format('d/m/Y H:i') }}
                     </td>
