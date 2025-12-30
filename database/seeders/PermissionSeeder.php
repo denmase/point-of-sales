@@ -13,60 +13,62 @@ class PermissionSeeder extends Seeder
      */
     public function run(): void
     {
+        $create = fn ($name) => Permission::firstOrCreate(['name' => $name, 'guard_name' => 'web']);
+
         // dashboard permissions
-        Permission::create(['name' => 'dashboard-access']);
+        $create('dashboard-access');
 
         // users permissions
-        Permission::create(['name' => 'users-access']);
-        Permission::create(['name' => 'users-create']);
-        Permission::create(['name' => 'users-update']);
-        Permission::create(['name' => 'users-delete']);
+        $create('users-access');
+        $create('users-create');
+        $create('users-update');
+        $create('users-delete');
 
         // roles permissions
-        Permission::create(['name' => 'roles-access']);
-        Permission::create(['name' => 'roles-create']);
-        Permission::create(['name' => 'roles-update']);
-        Permission::create(['name' => 'roles-delete']);
+        $create('roles-access');
+        $create('roles-create');
+        $create('roles-update');
+        $create('roles-delete');
 
         // permissions permissions
-        Permission::create(['name' => 'permissions-access']);
-        Permission::create(['name' => 'permissions-create']);
-        Permission::create(['name' => 'permissions-update']);
-        Permission::create(['name' => 'permissions-delete']);
+        $create('permissions-access');
+        $create('permissions-create');
+        $create('permissions-update');
+        $create('permissions-delete');
 
         //permission categories
-        Permission::create(['name' => 'categories-access']);
-        Permission::create(['name' => 'categories-create']);
-        Permission::create(['name' => 'categories-edit']);
-        Permission::create(['name' => 'categories-delete']);
+        $create('categories-access');
+        $create('categories-create');
+        $create('categories-edit');
+        $create('categories-delete');
 
         //permission products
-        Permission::create(['name' => 'products-access']);
-        Permission::create(['name' => 'products-create']);
-        Permission::create(['name' => 'products-edit']);
-        Permission::create(['name' => 'products-delete']);
+        $create('products-access');
+        $create('products-create');
+        $create('products-edit');
+        $create('products-delete');
 
         //permission customers
-        Permission::create(['name' => 'customers-access']);
-        Permission::create(['name' => 'customers-create']);
-        Permission::create(['name' => 'customers-edit']);
-        Permission::create(['name' => 'customers-delete']);
+        $create('customers-access');
+        $create('customers-create');
+        $create('customers-edit');
+        $create('customers-delete');
 
         //permission transactions
-        Permission::create(['name' => 'transactions-access']);
+        $create('transactions-access');
 
         // permission receivables & payables
-        Permission::create(['name' => 'receivables-access']);
-        Permission::create(['name' => 'receivables-pay']);
-        Permission::create(['name' => 'payables-access']);
-        Permission::create(['name' => 'payables-pay']);
-        Permission::create(['name' => 'suppliers-access']);
+        $create('receivables-access');
+        $create('receivables-pay');
+        $create('payables-access');
+        $create('payables-pay');
+        $create('suppliers-access');
 
         // permission reports
-        Permission::create(['name' => 'reports-access']);
-        Permission::create(['name' => 'profits-access']);
+        $create('reports-access');
+        $create('profits-access');
 
         // payment settings
-        Permission::create(['name' => 'payment-settings-access']);
+        $create('payment-settings-access');
     }
 }
