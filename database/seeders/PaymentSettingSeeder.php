@@ -16,6 +16,7 @@ class PaymentSettingSeeder extends Seeder
             'default_gateway' => 'cash',
             'midtrans_enabled' => false,
             'xendit_enabled' => false,
+            'xendit_callback_token' => null,
         ]);
     }
 }

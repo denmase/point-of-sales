@@ -15,6 +15,21 @@ class PaymentSettingController extends Controller
             'default_gateway' => 'cash',
         ]);
 
+        $midtransWebhookUrl = route('webhooks.midtrans');
+        $xenditWebhookUrl   = route('webhooks.xendit');
+        $appUrl             = (string) config('app.url');
+        $webhookWarnings    = [];
+
+        if (blank($appUrl)) {
+            $webhookWarnings[] = 'APP_URL belum diatur. Webhook URL yang dihasilkan bisa tidak valid untuk Midtrans/Xendit.';
+        } elseif ($this->isLocalAppUrl($appUrl)) {
+            $webhookWarnings[] = 'APP_URL masih mengarah ke localhost atau 127.0.0.1. Payment gateway membutuhkan URL publik yang bisa diakses dari internet.';
+        }
+
+        if ($setting->xendit_enabled && blank($setting->xendit_callback_token) && blank(config('services.xendit.callback_token'))) {
+            $webhookWarnings[] = 'Xendit aktif tetapi callback token belum diisi. Webhook Xendit akan ditolak sampai token tersedia.';
+        }
+
         return Inertia::render('Dashboard/Settings/Payment', [
             'setting'           => $setting,
             'supportedGateways' => [
@@ -23,6 +38,11 @@ class PaymentSettingController extends Controller
                 ['value' => PaymentSetting::GATEWAY_MIDTRANS, 'label' => 'Midtrans'],
                 ['value' => PaymentSetting::GATEWAY_XENDIT, 'label' => 'Xendit'],
             ],
+            'webhookUrls'       => [
+                'midtrans' => $midtransWebhookUrl,
+                'xendit'   => $xenditWebhookUrl,
+            ],
+            'webhookWarnings'   => $webhookWarnings,
         ]);
     }
 
@@ -45,6 +65,7 @@ class PaymentSettingController extends Controller
             'xendit_enabled'        => ['boolean'],
             'xendit_secret_key'     => ['nullable', 'string'],
             'xendit_public_key'     => ['nullable', 'string'],
+            'xendit_callback_token' => ['nullable', 'string', 'max:255'],
             'xendit_production'     => ['boolean'],
         ]);
 
@@ -60,6 +81,12 @@ class PaymentSettingController extends Controller
         if ($xenditEnabled && empty($data['xendit_secret_key'])) {
             return back()->withErrors([
                 'xendit_secret_key' => 'Secret key Xendit wajib diisi saat mengaktifkan Xendit.',
+            ])->withInput();
+        }
+
+        if ($xenditEnabled && empty($data['xendit_callback_token'])) {
+            return back()->withErrors([
+                'xendit_callback_token' => 'Callback token Xendit wajib diisi saat mengaktifkan Xendit.',
             ])->withInput();
         }
 
@@ -83,11 +110,20 @@ class PaymentSettingController extends Controller
             'xendit_enabled'        => $xenditEnabled,
             'xendit_secret_key'     => $data['xendit_secret_key'],
             'xendit_public_key'     => $data['xendit_public_key'],
+            'xendit_callback_token' => $data['xendit_callback_token'],
             'xendit_production'     => (bool) ($data['xendit_production'] ?? false),
         ]);
 
         return redirect()
             ->route('settings.payments.edit')
             ->with('success', 'Konfigurasi payment gateway berhasil disimpan.');
+    }
+
+    private function isLocalAppUrl(string $appUrl): bool
+    {
+        $host = parse_url($appUrl, PHP_URL_HOST);
+
+        return in_array($host, ['localhost', '127.0.0.1'], true)
+            || str_ends_with((string) $host, '.test');
     }
 }

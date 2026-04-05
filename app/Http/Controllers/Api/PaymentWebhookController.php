@@ -57,10 +57,9 @@ class PaymentWebhookController extends Controller
 
             $newStatus = $this->mapMidtransStatus($transactionStatus, $fraudStatus);
 
-            // Update transaction
             $transaction->update([
                 'payment_status'    => $newStatus,
-                'payment_reference' => $request->input('transaction_id'),
+                'payment_reference' => $request->input('transaction_id') ?: $transaction->payment_reference,
             ]);
 
             Log::info('Midtrans Webhook: Transaction updated', [
@@ -94,17 +93,28 @@ class PaymentWebhookController extends Controller
                 return response()->json(['status' => 'error', 'message' => 'Xendit not configured'], 400);
             }
 
-            // Verify callback token from header (X-CALLBACK-TOKEN)
             $callbackToken = $request->header('X-CALLBACK-TOKEN');
+            $expectedToken = $paymentSetting->xendit_callback_token ?: config('services.xendit.callback_token');
 
-            // For production, you should verify this token matches your Xendit callback verification token
-            // For now, we'll use the secret key as a simple check
-            // Note: In production, set a specific callback verification token in Xendit dashboard
+            if (blank($expectedToken)) {
+                Log::warning('Xendit Webhook: Callback token is not configured.');
+                return response()->json(['status' => 'error', 'message' => 'Xendit callback token is not configured'], 400);
+            }
 
-                                                          // Get invoice data
+            if (! is_string($callbackToken) || ! hash_equals($expectedToken, $callbackToken)) {
+                Log::warning('Xendit Webhook: Invalid callback token', [
+                    'external_id' => $request->input('external_id'),
+                ]);
+                return response()->json(['status' => 'error', 'message' => 'Invalid callback token'], 403);
+            }
+
             $externalId = $request->input('external_id'); // This is our invoice number
             $status     = $request->input('status');
             $paymentId  = $request->input('id');
+
+            if (blank($externalId) || blank($status) || blank($paymentId)) {
+                return response()->json(['status' => 'error', 'message' => 'Invalid payload'], 422);
+            }
 
             // Find transaction by invoice
             $transaction = Transaction::where('invoice', $externalId)->first();
@@ -117,10 +127,9 @@ class PaymentWebhookController extends Controller
             // Map Xendit status to our status
             $newStatus = $this->mapXenditStatus($status);
 
-            // Update transaction
             $transaction->update([
                 'payment_status'    => $newStatus,
-                'payment_reference' => $paymentId,
+                'payment_reference' => $paymentId ?: $transaction->payment_reference,
             ]);
 
             Log::info('Xendit Webhook: Transaction updated', [
@@ -153,7 +162,6 @@ class PaymentWebhookController extends Controller
             'capture', 'settlement'    => 'paid',
             'pending' => 'pending',
             'deny', 'cancel', 'expire' => 'failed',
-            'refund', 'partial_refund' => 'refunded',
             default   => 'pending',
         };
     }

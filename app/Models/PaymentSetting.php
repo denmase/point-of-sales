@@ -22,6 +22,7 @@ class PaymentSetting extends Model
         'xendit_enabled',
         'xendit_secret_key',
         'xendit_public_key',
+        'xendit_callback_token',
         'xendit_production',
     ];
 
@@ -103,6 +104,7 @@ class PaymentSetting extends Model
             'enabled'       => $this->isGatewayReady(self::GATEWAY_XENDIT),
             'secret_key'    => $this->xendit_secret_key,
             'public_key'    => $this->xendit_public_key,
+            'callback_token' => $this->xendit_callback_token,
             'is_production' => $this->xendit_production,
         ];
     }

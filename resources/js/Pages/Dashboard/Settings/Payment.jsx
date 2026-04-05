@@ -11,7 +11,12 @@ import {
 } from "@tabler/icons-react";
 import toast from "react-hot-toast";
 
-export default function Payment({ setting, supportedGateways = [] }) {
+export default function Payment({
+    setting,
+    supportedGateways = [],
+    webhookUrls = {},
+    webhookWarnings = [],
+}) {
     const { flash } = usePage().props;
 
     const { data, setData, put, errors, processing } = useForm({
@@ -24,6 +29,7 @@ export default function Payment({ setting, supportedGateways = [] }) {
         xendit_enabled: setting?.xendit_enabled ?? false,
         xendit_secret_key: setting?.xendit_secret_key ?? "",
         xendit_public_key: setting?.xendit_public_key ?? "",
+        xendit_callback_token: setting?.xendit_callback_token ?? "",
         xendit_production: setting?.xendit_production ?? false,
     });
 
@@ -268,6 +274,16 @@ export default function Payment({ setting, supportedGateways = [] }) {
                                 placeholder="xnd_public_development_xxx"
                             />
                         </div>
+                        <Input
+                            label="Callback Token"
+                            type="text"
+                            value={data.xendit_callback_token}
+                            onChange={(e) =>
+                                setData("xendit_callback_token", e.target.value)
+                            }
+                            errors={errors?.xendit_callback_token}
+                            placeholder="xendit-callback-token"
+                        />
                         <label className="flex items-center gap-2 cursor-pointer">
                             <Checkbox
                                 checked={data.xendit_production}
@@ -294,6 +310,18 @@ export default function Payment({ setting, supportedGateways = [] }) {
                         Salin URL berikut dan paste ke dashboard Midtrans/Xendit
                         sebagai Notification/Callback URL.
                     </p>
+                    {webhookWarnings.length > 0 && (
+                        <div className="mb-4 space-y-2">
+                            {webhookWarnings.map((warning) => (
+                                <div
+                                    key={warning}
+                                    className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300"
+                                >
+                                    {warning}
+                                </div>
+                            ))}
+                        </div>
+                    )}
                     <div className="space-y-3">
                         <div>
                             <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">
@@ -303,14 +331,14 @@ export default function Payment({ setting, supportedGateways = [] }) {
                                 <input
                                     type="text"
                                     readOnly
-                                    value={`${window.location.origin}/api/webhooks/midtrans`}
+                                    value={webhookUrls.midtrans || ""}
                                     className="flex-1 h-10 px-3 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => {
                                         navigator.clipboard.writeText(
-                                            `${window.location.origin}/api/webhooks/midtrans`
+                                            webhookUrls.midtrans || ""
                                         );
                                         toast.success("URL disalin!");
                                     }}
@@ -328,14 +356,14 @@ export default function Payment({ setting, supportedGateways = [] }) {
                                 <input
                                     type="text"
                                     readOnly
-                                    value={`${window.location.origin}/api/webhooks/xendit`}
+                                    value={webhookUrls.xendit || ""}
                                     className="flex-1 h-10 px-3 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => {
                                         navigator.clipboard.writeText(
-                                            `${window.location.origin}/api/webhooks/xendit`
+                                            webhookUrls.xendit || ""
                                         );
                                         toast.success("URL disalin!");
                                     }}

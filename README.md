@@ -137,6 +137,36 @@ Setelah login sebagai admin, lakukan pengecekan beberapa konfigurasi berikut:
 
 > Catatan: Midtrans dan Xendit bersifat opsional. Jika tidak dikonfigurasi, aplikasi tetap bisa berjalan dengan pembayaran tunai dan transfer bank manual.
 
+## Konfigurasi Webhook Payment Gateway
+
+Untuk Midtrans dan Xendit, payment link saja tidak cukup. Status transaksi akan tetap `pending` sampai callback webhook diterima aplikasi.
+
+Checklist minimal:
+
+1. Set `APP_URL` ke domain publik aplikasi, jangan `localhost`
+2. Jalankan `php artisan migrate`
+3. Buka menu payment settings dan salin webhook URL yang ditampilkan aplikasi
+4. Paste URL tersebut ke dashboard Midtrans/Xendit
+5. Untuk Xendit, isi `Callback Token` yang sama dengan token verifikasi di dashboard Xendit
+
+Contoh konfigurasi environment:
+
+```env
+APP_URL=https://pos.example.com
+XENDIT_CALLBACK_TOKEN=your-secure-callback-token
+```
+
+Endpoint yang dipakai aplikasi:
+
+-   Midtrans: `/api/webhooks/midtrans`
+-   Xendit: `/api/webhooks/xendit`
+
+Catatan penting:
+
+-   Jika `APP_URL` masih `http://localhost`, webhook dari Midtrans/Xendit tidak akan bisa menjangkau aplikasi.
+-   Xendit webhook akan ditolak jika `X-CALLBACK-TOKEN` tidak cocok dengan token yang disimpan di aplikasi.
+-   Midtrans webhook diverifikasi menggunakan signature key dari payload notification.
+
 ## Default Login
 
 -   **Admin**: `arya@gmail.com` / `password`
