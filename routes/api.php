@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\PaymentWebhookController;
 use App\Http\Controllers\Api\MobileAuthController;
+use App\Http\Controllers\Api\MobileDocumentController;
 use App\Http\Controllers\Api\MobilePosController;
 use Illuminate\Support\Facades\Route;
 
@@ -46,5 +47,6 @@ Route::prefix('mobile')->group(function () {
         Route::post('/checkout', [MobilePosController::class, 'checkout']);
         Route::get('/transactions', [MobilePosController::class, 'transactions']);
         Route::get('/transactions/{invoice}', [MobilePosController::class, 'showTransaction']);
+        Route::get('/transactions/{invoice}/documents/{variant}', [MobileDocumentController::class, 'show']);
     });
 });
