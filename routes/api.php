@@ -46,7 +46,7 @@ Route::prefix('mobile')->group(function () {
 
         Route::post('/checkout', [MobilePosController::class, 'checkout']);
         Route::get('/transactions', [MobilePosController::class, 'transactions']);
-        Route::get('/transactions/{invoice}', [MobilePosController::class, 'showTransaction']);
         Route::get('/transactions/{invoice}/documents/{variant}', [MobileDocumentController::class, 'show']);
+        Route::get('/transactions/{invoice}', [MobilePosController::class, 'showTransaction']);
     });
 });
